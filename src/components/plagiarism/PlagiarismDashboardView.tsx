@@ -47,11 +47,18 @@ export function PlagiarismDashboardView({
   const refInputRef = useRef<HTMLInputElement>(null);
 
   const allowedExtensions = ['.pdf', '.docx', '.txt'];
+  const maxFileSize = 50 * 1024 * 1024;
 
-  const validateFile = (file: File): boolean => {
+  const getFileValidationError = (file: File): string | null => {
     const name = file.name.toLowerCase();
-    return allowedExtensions.some((ext) => name.endsWith(ext));
+    if (!allowedExtensions.some((ext) => name.endsWith(ext))) {
+      return 'Unsupported file type. Use PDF, DOCX, or TXT.';
+    }
+    if (file.size > maxFileSize) return `${file.name} exceeds the 50 MB file limit.`;
+    return null;
   };
+
+  const validateFile = (file: File): boolean => getFileValidationError(file) === null;
 
   const handleOriginalDrop = (e: React.DragEvent) => {
     e.preventDefault();
@@ -59,12 +66,13 @@ export function PlagiarismDashboardView({
     if (isLoading) return;
     const file = e.dataTransfer.files[0];
     if (file) {
-      if (validateFile(file)) {
+      const fileError = getFileValidationError(file);
+      if (!fileError) {
         setOriginalFile(file);
         setValidationError(null);
         onClearError?.();
       } else {
-        setValidationError('Invalid format. Original document must be PDF, DOCX, or TXT.');
+        setValidationError(fileError);
       }
     }
   };
@@ -73,43 +81,50 @@ export function PlagiarismDashboardView({
     e.preventDefault();
     setRefDragOver(false);
     if (isLoading) return;
-    const files = Array.from(e.dataTransfer.files).filter(validateFile);
+    const droppedFiles = Array.from(e.dataTransfer.files);
+    const files = droppedFiles.filter(validateFile);
+    const rejectedFile = droppedFiles.find((file) => !validateFile(file));
     if (files.length > 0) {
       setReferenceFiles((prev) => {
         const existingNames = new Set(prev.map((f) => f.name));
         const newUnique = files.filter((f) => !existingNames.has(f.name));
         return [...prev, ...newUnique];
       });
-      setValidationError(null);
+      setValidationError(rejectedFile ? getFileValidationError(rejectedFile) : null);
       onClearError?.();
     } else {
-      setValidationError('Please upload supported reference documents (.pdf, .docx, .txt).');
+      setValidationError(rejectedFile ? getFileValidationError(rejectedFile) : 'Please upload supported reference documents (.pdf, .docx, .txt).');
     }
   };
 
   const handleOriginalSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (validateFile(file)) {
+      const fileError = getFileValidationError(file);
+      if (!fileError) {
         setOriginalFile(file);
         setValidationError(null);
         onClearError?.();
       } else {
-        setValidationError('Invalid format. Supported extensions: .pdf, .docx, .txt.');
+        setValidationError(fileError);
       }
     }
   };
 
   const handleReferenceSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files || []).filter(validateFile);
+    const selected = Array.from(e.target.files || []);
+    const files = selected.filter(validateFile);
     if (files.length > 0) {
       setReferenceFiles((prev) => {
         const existingNames = new Set(prev.map((f) => f.name));
         const newUnique = files.filter((f) => !existingNames.has(f.name));
         return [...prev, ...newUnique];
       });
-      setValidationError(null);
+      const rejectedFile = selected.find((file) => !validateFile(file));
+      setValidationError(rejectedFile ? getFileValidationError(rejectedFile) : null);
       onClearError?.();
+    } else if (selected.length > 0) {
+      setValidationError(getFileValidationError(selected[0]) || 'No supported reference files were selected.');
     }
   };
 
@@ -140,7 +155,7 @@ export function PlagiarismDashboardView({
   };
 
   return (
-    <div className="flex min-h-full w-full flex-col items-center justify-start p-4 md:p-6 lg:p-8 space-y-6 max-w-[1580px] mx-auto">
+    <div className="mx-auto flex min-h-full min-w-0 w-full max-w-[1800px] flex-col items-center justify-start space-y-6 p-4 md:p-6 lg:p-8">
       
       {/* Title & Subtitle Banner */}
       <div className="w-full flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-[var(--border-muted)] pb-5">
@@ -183,7 +198,7 @@ export function PlagiarismDashboardView({
       </div>
 
       {/* Two Numbered Panels: 01 Original Document & 02 Reference Material */}
-      <div className="grid w-full grid-cols-1 gap-6 lg:grid-cols-2 items-stretch">
+      <div className="grid w-full min-w-0 grid-cols-1 items-stretch gap-4 md:grid-cols-2 md:gap-5 lg:gap-6">
         
         {/* ================= PANEL 01: ORIGINAL DOCUMENT ================= */}
         <div className="glass-panel group relative flex flex-col rounded-xl p-5 md:p-6 transition-all duration-300 min-h-[460px] justify-between">

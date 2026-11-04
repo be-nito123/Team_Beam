@@ -64,7 +64,7 @@ export function PlagiarismResultsView({
         };
       case 'PARAPHRASED':
         return {
-          label: 'PARAPHRASED FINDING',
+          label: result.isLocalCalculation ? 'NEAR LEXICAL MATCH' : 'PARAPHRASED FINDING',
           text: 'text-[var(--status-unsupported)]',
           border: 'border-[var(--status-unsupported)]',
           bg: 'bg-[var(--status-unsupported-bg)]',
@@ -81,7 +81,7 @@ export function PlagiarismResultsView({
   };
 
   return (
-    <div className="flex flex-col w-full min-h-full p-4 md:p-6 lg:p-8 space-y-6 max-w-[1580px] mx-auto text-[var(--text-primary)]">
+    <div className="mx-auto flex min-h-full min-w-0 w-full max-w-[1800px] flex-col space-y-6 p-4 text-[var(--text-primary)] md:p-6 lg:p-8">
       
       {/* Top Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[var(--border-muted)] pb-5">
@@ -118,6 +118,10 @@ export function PlagiarismResultsView({
           <span>OBJECTIVE SIMILARITY FINDINGS ONLY</span>
         </div>
       </div>
+
+      <p className="-mt-4 rounded border border-[var(--border-muted)] bg-[var(--card-surface)] px-3 py-2 text-[11px] leading-relaxed text-[var(--text-secondary)]">
+        Similarity is a review signal, not a confirmed plagiarism finding. Local results compare TXT files using exact normalized sentence matching and lexical word overlap; they do not perform semantic analysis or internet-wide searches.
+      </p>
 
       {/* Similarity Overview (Backend or Validated Calculation Only) */}
       <div className="grid grid-cols-2 md:grid-cols-6 gap-3 md:gap-4">
@@ -177,7 +181,7 @@ export function PlagiarismResultsView({
         <div className="glass-panel rounded-xl p-4 flex flex-col justify-between border-[var(--border-muted)]">
           <div className="flex items-center justify-between text-[var(--text-secondary)]">
             <span className="font-michroma text-[10px] uppercase tracking-widest">
-              PARAPHRASED
+              {result.isLocalCalculation ? 'NEAR / LEXICAL' : 'PARAPHRASED'}
             </span>
             <span className="h-2 w-2 rounded-full bg-[var(--status-unsupported)]" />
           </div>
@@ -192,7 +196,7 @@ export function PlagiarismResultsView({
         <div className="glass-panel rounded-xl p-4 flex flex-col justify-between border-[var(--border-muted)]">
           <div className="flex items-center justify-between text-[var(--text-secondary)]">
             <span className="font-michroma text-[10px] uppercase tracking-widest">
-              ORIGINAL
+              {result.isLocalCalculation ? 'UNMATCHED' : 'ORIGINAL'}
             </span>
             <span className="h-2 w-2 rounded-full bg-[var(--status-supported)]" />
           </div>
@@ -225,8 +229,8 @@ export function PlagiarismResultsView({
             {[
               { id: 'ALL', label: `ALL (${result.matches.length})` },
               { id: 'EXACT', label: `EXACT (${result.matches.filter((m) => m.classification === 'EXACT').length})` },
-              { id: 'PARAPHRASED', label: `PARAPHRASED (${result.matches.filter((m) => m.classification === 'PARAPHRASED').length})` },
-              { id: 'ORIGINAL', label: `ORIGINAL (${result.matches.filter((m) => m.classification === 'ORIGINAL').length})` },
+              { id: 'PARAPHRASED', label: `${result.isLocalCalculation ? 'NEAR / LEXICAL' : 'PARAPHRASED'} (${result.matches.filter((m) => m.classification === 'PARAPHRASED').length})` },
+              { id: 'ORIGINAL', label: `${result.isLocalCalculation ? 'UNMATCHED' : 'ORIGINAL'} (${result.matches.filter((m) => m.classification === 'ORIGINAL').length})` },
             ].map((tab) => {
               const isSelected = activeFilter === tab.id;
               return (
@@ -311,7 +315,7 @@ export function PlagiarismResultsView({
                     <span className="font-mono text-[10px] uppercase tracking-widest text-[var(--text-secondary)] block mb-1.5">
                       ORIGINAL DOCUMENT PASSAGE
                     </span>
-                    <p className="text-xs md:text-sm font-sans leading-relaxed text-[var(--text-primary)] bg-[var(--highlight-bg)] p-2 rounded">
+                    <p className="break-words text-xs md:text-sm font-sans leading-relaxed text-[var(--text-primary)] bg-[var(--highlight-bg)] p-2 rounded">
                       "{match.originalPassage}"
                     </p>
                   </div>
@@ -322,11 +326,11 @@ export function PlagiarismResultsView({
                       <span className="font-mono text-[10px] uppercase tracking-widest text-[var(--text-secondary)]">
                         MATCHED REFERENCE PASSAGE
                       </span>
-                      <span className="font-mono text-[10px] text-[var(--accent)] truncate max-w-[150px]">
+                      <span title={match.referenceDocName} className="font-mono text-[10px] text-[var(--accent)] truncate max-w-[150px]">
                         {match.referenceDocName}
                       </span>
                     </div>
-                    <p className="text-xs md:text-sm font-sans leading-relaxed text-[var(--text-primary)] italic p-2 rounded bg-[var(--card-surface)]">
+                    <p className="break-words text-xs md:text-sm font-sans leading-relaxed text-[var(--text-primary)] italic p-2 rounded bg-[var(--card-surface)]">
                       "{match.referencePassage}"
                     </p>
                   </div>

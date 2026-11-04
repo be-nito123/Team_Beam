@@ -95,7 +95,7 @@ export function HistoryView({
   }, [sessions, searchQuery, activeTab]);
 
   return (
-    <div className="flex flex-col w-full min-h-full p-4 md:p-6 lg:p-8 space-y-6 max-w-[1580px] mx-auto text-[var(--text-primary)]">
+    <div className="mx-auto flex min-h-full min-w-0 w-full max-w-[1800px] flex-col space-y-6 p-4 text-[var(--text-primary)] md:p-6 lg:p-8">
       
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[var(--border-muted)] pb-5">

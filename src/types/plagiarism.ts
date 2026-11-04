@@ -36,6 +36,38 @@ export interface PlagiarismResult {
   matches: PlagiarismMatch[];
   referenceDocuments: ReferenceDocumentMeta[];
   isLocalCalculation?: boolean;
+  onlineAnalysis?: OnlinePlagiarismReport;
+  documentAnalysis?: DocumentSimilarityReport;
+  aiContentAnalysis?: AiContentReport;
+}
+
+export interface OnlinePlagiarismReport {
+  status: 'complete' | 'partial' | 'not_configured' | 'unavailable';
+  message?: string;
+  overallSimilarity: number;
+  matchedSources: number;
+  exactMatches: number;
+  nearDuplicateMatches: number;
+  semanticMatches: number;
+  retrievalTimestamp?: string;
+  matches: Array<PlagiarismMatch & { sourceUrl: string; sourceDomain: string; sourceTitle?: string; publishedAt?: string }>;
+}
+
+export interface DocumentSimilarityReport {
+  status: 'complete' | 'partial' | 'unavailable';
+  message?: string;
+  referenceCount: number;
+  extractedCount: number;
+  matches: PlagiarismMatch[];
+}
+
+export interface AiContentReport {
+  assessment: 'AI-like writing patterns detected' | 'Predominantly human-like writing patterns' | 'Inconclusive — insufficient evidence';
+  estimatedAiLikeness: number | null;
+  confidence: 'low' | 'moderate';
+  wordsAnalyzed: number;
+  indicators: string[];
+  limitations: string;
 }
 
 export interface PlagiarismSession {
@@ -49,7 +81,9 @@ export interface PlagiarismSession {
 }
 
 export interface PlagiarismRequest {
-  originalFile: File;
+  originalFile?: File;
+  originalText?: string;
+  documentName?: string;
   referenceFiles: File[];
   endpointUrl?: string;
 }

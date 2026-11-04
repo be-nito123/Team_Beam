@@ -80,7 +80,7 @@ export function LayoutShell({
       />
 
       {/* Main Content Area */}
-      <div className="flex flex-1 flex-col md:pl-[265px] min-h-screen w-full overflow-x-hidden">
+      <div className="flex min-h-screen min-w-0 w-full flex-1 flex-col overflow-x-hidden xl:pl-[265px]">
         <Header
           activeModule={activeModule}
           onSwitchModule={onSwitchModule}
@@ -93,7 +93,7 @@ export function LayoutShell({
           onToggleTheme={onToggleTheme}
         />
 
-        <main className="flex-1 flex flex-col w-full relative">
+        <main className="relative flex min-w-0 w-full flex-1 flex-col">
           {children}
         </main>
       </div>

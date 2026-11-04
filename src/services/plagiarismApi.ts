@@ -216,15 +216,20 @@ export async function runLocalValidatedAnalysis(
     let bestScore = 0;
     let bestRefDoc = '';
     let bestRefSentence = '';
+    let bestRefSentenceIndex = 0;
     let isExact = false;
 
     for (const ref of refTexts) {
       const refSentences = cleanSentences(ref.text);
-      for (const refSent of refSentences) {
-        if (refSent.toLowerCase() === orig.toLowerCase()) {
+      for (let refSentenceIndex = 0; refSentenceIndex < refSentences.length; refSentenceIndex++) {
+        const refSent = refSentences[refSentenceIndex];
+        const normalizedOriginal = orig.toLowerCase().replace(/[^\p{L}\p{N}\s]/gu, ' ').replace(/\s+/g, ' ').trim();
+        const normalizedReference = refSent.toLowerCase().replace(/[^\p{L}\p{N}\s]/gu, ' ').replace(/\s+/g, ' ').trim();
+        if (normalizedReference === normalizedOriginal) {
           bestScore = 1.0;
           bestRefDoc = ref.name;
           bestRefSentence = refSent;
+          bestRefSentenceIndex = refSentenceIndex + 1;
           isExact = true;
           break;
         }
@@ -242,6 +247,7 @@ export async function runLocalValidatedAnalysis(
           bestScore = jaccard;
           bestRefDoc = ref.name;
           bestRefSentence = refSent;
+          bestRefSentenceIndex = refSentenceIndex + 1;
         }
       }
       if (isExact) break;
@@ -249,7 +255,7 @@ export async function runLocalValidatedAnalysis(
 
     if (bestScore >= 0.35) {
       matchedSourcesSet.add(bestRefDoc);
-      const classification = isExact || bestScore >= 0.88 ? 'EXACT' : 'PARAPHRASED';
+      const classification = isExact ? 'EXACT' : 'PARAPHRASED';
       if (classification === 'EXACT') exactCount++;
       else paraphrasedCount++;
 
@@ -259,7 +265,7 @@ export async function runLocalValidatedAnalysis(
         originalPassage: orig,
         referencePassage: bestRefSentence,
         referenceDocName: bestRefDoc,
-        pageOrSection: 'Validated Text Passage',
+        pageOrSection: `Sentence ${bestRefSentenceIndex}`,
         similarityScore: Number(bestScore.toFixed(2)),
         notes: isExact
           ? 'Exact identical text match confirmed.'
@@ -334,9 +340,8 @@ export async function submitPlagiarismCheck(
   // If no backend responded or responded with 404/HTML:
   // Check if text files are provided so we can run deterministic validated local calculation:
   const canRunLocal =
-    req.originalFile.name.endsWith('.txt') ||
-    req.originalFile.type.includes('text') ||
-    req.referenceFiles.some((f) => f.name.endsWith('.txt') || f.type.includes('text'));
+    /\.txt$/i.test(req.originalFile.name) &&
+    req.referenceFiles.every((file) => /\.txt$/i.test(file.name));
 
   if (canRunLocal) {
     const localResult = await runLocalValidatedAnalysis(req.originalFile, req.referenceFiles);

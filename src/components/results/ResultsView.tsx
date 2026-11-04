@@ -38,9 +38,14 @@ export function ResultsView({
   }, [result.claims, activeFilter]);
 
   const { total, supported, contradicted, unsupported } = result.summary;
+  const claimGridClass = filteredClaims.length === 1
+    ? 'max-w-[900px] grid-cols-1'
+    : filteredClaims.length === 2
+      ? 'max-w-[1480px] grid-cols-1 md:grid-cols-2'
+      : 'max-w-[1800px] grid-cols-1 md:grid-cols-2 min-[1360px]:grid-cols-3';
 
   return (
-    <div className="flex flex-col w-full min-h-full p-4 md:p-6 lg:p-8 space-y-6 max-w-[1580px] mx-auto text-[var(--text-primary)]">
+    <div className="mx-auto flex min-h-full min-w-0 w-full max-w-[1800px] flex-col space-y-6 p-4 text-[var(--text-primary)] md:p-6 lg:p-8">
       
       {/* Top Bar: Back Action & Title */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[var(--border-muted)] pb-5">
@@ -202,7 +207,7 @@ export function ResultsView({
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
+        <div className={cn('mx-auto grid w-full min-w-0 gap-4 md:gap-5', claimGridClass)}>
           {filteredClaims.map((claim) => (
             <ClaimCard
               key={claim.id}

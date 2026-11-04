@@ -85,14 +85,14 @@ export function ClaimCard({ claim, onOpenExplorer }: ClaimCardProps) {
 
         {/* Claim Text */}
         <div className="mt-3.5">
-          <p className="text-sm font-medium leading-relaxed text-[var(--text-primary)]">
+          <p className="break-words text-sm font-medium leading-relaxed text-[var(--text-primary)]">
             {claim.originalClaim}
           </p>
         </div>
 
         {/* Explanation */}
         <div className="mt-3 rounded-lg border border-[var(--border-muted)] bg-[var(--card-surface)] p-3">
-          <p className="text-xs leading-relaxed text-[var(--text-secondary)]">
+          <p className="break-words text-xs leading-relaxed text-[var(--text-secondary)]">
             {claim.explanation}
           </p>
         </div>
@@ -103,7 +103,7 @@ export function ClaimCard({ claim, onOpenExplorer }: ClaimCardProps) {
             <span className="font-mono text-[10px] uppercase text-[var(--text-secondary)] block mb-0.5">
               SOURCE REFERENCE:
             </span>
-            <p className="text-xs italic text-[var(--text-primary)] line-clamp-2">
+            <p className="break-words text-xs italic text-[var(--text-primary)] line-clamp-2">
               "{claim.evidence.exactSentence}"
             </p>
           </div>
@@ -116,7 +116,7 @@ export function ClaimCard({ claim, onOpenExplorer }: ClaimCardProps) {
 
       {/* Action Footer: Evidence Explorer Button */}
       <div className="mt-5 border-t border-[var(--border-muted)] pt-3.5 flex items-center justify-between">
-        <span className="font-mono text-[10px] text-[var(--text-secondary)] uppercase">
+        <span title={claim.evidence?.source} className="min-w-0 max-w-[48%] truncate font-mono text-[10px] text-[var(--text-secondary)] uppercase">
           {claim.evidence ? claim.evidence.source : 'NO EVIDENCE MAPPED'}
         </span>
 

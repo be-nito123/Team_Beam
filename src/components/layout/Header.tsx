@@ -46,29 +46,29 @@ export function Header({
       : plagTabTitles[currentTab] || currentTab.toUpperCase();
 
   return (
-    <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-[var(--border-muted)] bg-[var(--header-bg)] px-4 md:px-8 backdrop-blur-md transition-colors duration-250">
+    <header className="sticky top-0 z-30 flex min-h-16 flex-wrap items-center justify-between gap-x-4 gap-y-2 border-b border-[var(--border-muted)] bg-[var(--header-bg)] px-4 py-2 backdrop-blur-md transition-colors duration-250 md:px-6 xl:px-8">
       
       {/* Left: Mobile Sidebar Trigger & Breadcrumbs */}
-      <div className="flex items-center space-x-3">
+      <div className="flex min-w-0 flex-1 items-center space-x-3">
         <button
           onClick={onOpenMobileSidebar}
-          className="rounded p-2 text-[var(--text-primary)] hover:bg-[var(--card-surface)] md:hidden"
+          className="min-h-11 min-w-11 shrink-0 rounded p-2 text-[var(--text-primary)] hover:bg-[var(--card-surface)] xl:hidden"
           aria-label="Open sidebar"
         >
           <Menu className="h-5 w-5" />
         </button>
 
-        <div className="flex flex-col">
-          <div className="flex items-center space-x-2">
-            <span className="font-michroma text-[10px] uppercase tracking-widest text-[var(--text-secondary)]">
+        <div className="flex min-w-0 flex-col">
+          <div className="flex min-w-0 items-center gap-2">
+            <span className="shrink-0 font-michroma text-[10px] uppercase tracking-widest text-[var(--text-secondary)]">
               VERITRACE //
             </span>
-            <span className="font-michroma text-xs tracking-wider text-[var(--text-primary)]">
+            <span title={currentModuleTitle} className="min-w-0 truncate font-michroma text-xs tracking-wider text-[var(--text-primary)]">
               {currentModuleTitle}
             </span>
           </div>
           {activeTitle && currentTab === 'results' && (
-            <span className="max-w-[200px] sm:max-w-[320px] md:max-w-[420px] truncate text-[11px] text-[var(--text-secondary)] font-mono">
+            <span title={activeTitle} className="max-w-[56vw] truncate text-[11px] text-[var(--text-secondary)] font-mono xl:max-w-[320px]">
               {activeTitle}
             </span>
           )}
@@ -76,7 +76,7 @@ export function Header({
       </div>
 
       {/* Center: PRODUCT SWITCHER TABS */}
-      <div className="hidden sm:flex items-center rounded-lg border border-[var(--border-color)] bg-[var(--card-surface)] p-1">
+      <div className="hidden shrink-0 items-center rounded-lg border border-[var(--border-color)] bg-[var(--card-surface)] p-1 xl:flex">
         <button
           type="button"
           onClick={() => onSwitchModule('ai-verification')}

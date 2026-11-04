@@ -14,7 +14,7 @@ export function HowItWorksExample() {
   return (
     <section
       aria-label="How VeriTrace Works Example"
-      className="glass-panel relative w-full max-w-[1580px] rounded-xl border border-[var(--border-color)] bg-[var(--card-surface)] p-5 md:p-7 backdrop-blur-md transition-all duration-300 text-[var(--text-primary)]"
+      className="glass-panel relative w-full max-w-[1800px] min-w-0 rounded-xl border border-[var(--border-color)] bg-[var(--card-surface)] p-5 md:p-7 backdrop-blur-md transition-all duration-300 text-[var(--text-primary)]"
     >
       {/* Section Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[var(--border-muted)] pb-4">

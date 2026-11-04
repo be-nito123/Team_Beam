@@ -22,7 +22,9 @@ export async function checkBackendHealth(): Promise<boolean> {
       signal: controller.signal,
     });
     clearTimeout(timeoutId);
-    if (res.ok) {
+    const contentType = res.headers.get('content-type')?.toLowerCase() || '';
+    const isJsonResponse = contentType.includes('application/json') || contentType.includes('+json');
+    if (res.ok && isJsonResponse) {
       isMockMode = false;
       return true;
     }

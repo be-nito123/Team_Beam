@@ -54,10 +54,10 @@ export function DashboardView({
   return (
     <div className="flex min-h-full w-full flex-col items-center justify-start p-4 md:p-6 lg:p-8 space-y-8">
       {/* Exactly three equal-height panels, horizontal, centered */}
-      <div className="grid w-full max-w-[1580px] grid-cols-1 gap-4 md:gap-5 lg:grid-cols-3 lg:gap-6 items-stretch">
+      <div className="grid w-full max-w-[1800px] grid-cols-1 items-stretch gap-4 md:grid-cols-2 md:gap-5 min-[1360px]:grid-cols-3 min-[1360px]:gap-6">
         
         {/* ================= PANEL 01: AI CLAIM ================= */}
-        <div className="glass-panel group relative flex flex-col rounded-xl p-5 md:p-6 transition-all duration-300 min-h-[500px] lg:h-[calc(100vh-280px)] lg:min-h-[540px] max-h-[680px]">
+        <div className="glass-panel group relative flex min-w-0 flex-col rounded-xl p-5 transition-all duration-300 md:p-6 md:min-h-[420px] min-[1360px]:h-[calc(100vh-280px)] min-[1360px]:min-h-[540px] min-[1360px]:max-h-[680px]">
           {/* Header */}
           <div className="flex items-start justify-between border-b border-[var(--border-muted)] pb-4">
             <div>
@@ -100,19 +100,22 @@ export function DashboardView({
               placeholder="Enter the AI-generated answer..."
               disabled={isLoading}
               maxLength={10000}
-              className="input-glass h-full w-full resize-none rounded-lg p-4 font-sans text-sm leading-relaxed placeholder:opacity-50 transition-all duration-200"
+              aria-label="AI-generated answer"
+              aria-required="true"
+              wrap="soft"
+              className="input-glass h-full min-h-[240px] min-w-0 w-full max-w-full resize-none overflow-x-hidden rounded-lg p-4 font-sans text-sm leading-relaxed placeholder:opacity-50 transition-all duration-200 md:min-h-0"
             />
           </div>
 
           {/* Footer: Character Counter */}
-          <div className="mt-3 flex items-center justify-between border-t border-[var(--border-muted)] pt-3 text-[11px] font-mono text-[var(--text-secondary)]">
+          <div className="mt-3 flex min-w-0 items-center justify-between gap-2 border-t border-[var(--border-muted)] pt-3 text-[11px] font-mono text-[var(--text-secondary)]">
             <span>INPUT BUFFER</span>
             <span>{aiClaim.length} / 10000 CHARACTERS</span>
           </div>
         </div>
 
         {/* ================= PANEL 02: YOUR CLAIM / GROUND TRUTH ================= */}
-        <div className="glass-panel group relative flex flex-col rounded-xl p-5 md:p-6 transition-all duration-300 min-h-[500px] lg:h-[calc(100vh-280px)] lg:min-h-[540px] max-h-[680px]">
+        <div className="glass-panel group relative flex min-w-0 flex-col rounded-xl p-5 transition-all duration-300 md:p-6 md:min-h-[420px] min-[1360px]:h-[calc(100vh-280px)] min-[1360px]:min-h-[540px] min-[1360px]:max-h-[680px]">
           {/* Header */}
           <div className="flex items-start justify-between border-b border-[var(--border-muted)] pb-4">
             <div>
@@ -155,7 +158,9 @@ export function DashboardView({
               placeholder="Enter your claim or reference text..."
               disabled={isLoading}
               maxLength={20000}
-              className="input-glass h-full w-full resize-none rounded-lg p-4 font-sans text-sm leading-relaxed placeholder:opacity-50 transition-all duration-200"
+              aria-label="Reference evidence text"
+              wrap="soft"
+              className="input-glass h-full min-h-[200px] min-w-0 w-full max-w-full resize-none overflow-x-hidden rounded-lg p-4 font-sans text-sm leading-relaxed placeholder:opacity-50 transition-all duration-200 md:min-h-0"
             />
           </div>
 
@@ -193,14 +198,14 @@ export function DashboardView({
           </div>
 
           {/* Footer: Character Counter */}
-          <div className="mt-3 flex items-center justify-between border-t border-[var(--border-muted)] pt-3 text-[11px] font-mono text-[var(--text-secondary)]">
+          <div className="mt-3 flex min-w-0 items-center justify-between gap-2 border-t border-[var(--border-muted)] pt-3 text-[11px] font-mono text-[var(--text-secondary)]">
             <span>REFERENCE BUFFER</span>
             <span>{referenceClaim.length} / 20000 CHARACTERS</span>
           </div>
         </div>
 
         {/* ================= PANEL 03: VERIFY ================= */}
-        <div className="glass-panel group relative flex flex-col justify-between rounded-xl p-5 md:p-6 transition-all duration-300 min-h-[500px] lg:h-[calc(100vh-280px)] lg:min-h-[540px] max-h-[680px]">
+        <div className="glass-panel group relative flex min-w-0 flex-col justify-between rounded-xl p-5 transition-all duration-300 md:col-span-2 md:min-h-[300px] md:p-6 min-[1360px]:col-span-1 min-[1360px]:h-[calc(100vh-280px)] min-[1360px]:min-h-[540px] min-[1360px]:max-h-[680px]">
           {/* Header */}
           <div className="border-b border-[var(--border-muted)] pb-4">
             <div className="flex items-baseline space-x-2">
@@ -229,11 +234,15 @@ export function DashboardView({
             </div>
 
             {/* Error Message display if any */}
-            {error && (
-              <div className="mb-6 flex w-full max-w-sm items-start space-x-2.5 rounded border border-[var(--status-contradicted)] bg-[var(--status-contradicted-bg)] p-3 text-left">
+            {error ? (
+              <div role="alert" className="mb-6 flex w-full max-w-sm items-start gap-2.5 rounded border border-[var(--status-contradicted)] bg-[var(--status-contradicted-bg)] p-3 text-left">
                 <AlertTriangle className="h-4 w-4 shrink-0 text-[var(--status-contradicted)] mt-0.5" />
                 <p className="text-xs text-[var(--status-contradicted)] leading-relaxed">{error}</p>
               </div>
+            ) : (
+              <p role="status" aria-live="polite" className="mb-6 max-w-sm text-center text-xs leading-relaxed text-[var(--text-secondary)]">
+                {isLoading ? 'Verification is in progress. Keep this page open while the evidence is checked.' : 'Enter an AI answer and provide reference text or a source document to begin verification.'}
+              </p>
             )}
 
             {/* Single Centered RUN VERIFICATION Button with BorderTrail */}

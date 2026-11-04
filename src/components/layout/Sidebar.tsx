@@ -65,7 +65,7 @@ export function Sidebar({
       {/* Mobile Backdrop */}
       {isOpenMobile && (
         <div
-          className="fixed inset-0 z-40 bg-black/80 backdrop-blur-sm md:hidden"
+          className="fixed inset-0 z-40 bg-black/80 backdrop-blur-sm xl:hidden"
           onClick={onCloseMobile}
         />
       )}
@@ -73,7 +73,7 @@ export function Sidebar({
       {/* Sidebar container */}
       <aside
         className={cn(
-          'fixed inset-y-0 left-0 z-50 flex w-[265px] flex-col bg-[var(--sidebar-color)] border-r border-[var(--border-color)] transition-transform duration-300 ease-in-out md:translate-x-0 text-[var(--text-primary)]',
+          'fixed inset-y-0 left-0 z-50 flex w-[265px] min-h-0 flex-col bg-[var(--sidebar-color)] border-r border-[var(--border-color)] transition-transform duration-300 ease-in-out xl:translate-x-0 text-[var(--text-primary)]',
           isOpenMobile ? 'translate-x-0' : '-translate-x-full'
         )}
       >
@@ -97,7 +97,7 @@ export function Sidebar({
             )}
             <button
               onClick={onCloseMobile}
-              className="p-1 text-[var(--text-secondary)] hover:text-[var(--text-primary)] md:hidden"
+              className="p-1 text-[var(--text-secondary)] hover:text-[var(--text-primary)] xl:hidden"
               aria-label="Close sidebar"
             >
               <X className="h-5 w-5" />
@@ -262,7 +262,7 @@ export function Sidebar({
         )}
 
         {/* RECENT ANALYSES / RECENT PLAGIARISM CHECKS */}
-        <div className="flex-1 overflow-y-auto px-3 py-2">
+        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-3 py-2">
           <div className="px-3 py-1">
             <span className="font-michroma text-[9px] uppercase tracking-widest text-[var(--text-secondary)]">
               {activeModule === 'ai-verification' ? 'RECENT ANALYSES' : 'RECENT PLAGIARISM CHECKS'}
@@ -285,6 +285,7 @@ export function Sidebar({
                         onSelectAiSession(session.id);
                         onCloseMobile();
                       }}
+                      title={session.title}
                       className={cn(
                         'group flex w-full flex-col items-start rounded px-3 py-2 text-left transition-colors',
                         isSelected
@@ -292,7 +293,7 @@ export function Sidebar({
                           : 'text-[var(--text-secondary)] hover:bg-[var(--card-surface)] hover:text-[var(--text-primary)]'
                       )}
                     >
-                      <span className="line-clamp-1 text-xs font-medium text-[var(--text-primary)]">
+                      <span className="line-clamp-2 break-words text-xs font-medium text-[var(--text-primary)]">
                         {session.title}
                       </span>
                       <div className="mt-1 flex w-full items-center justify-between text-[10px] text-[var(--text-secondary)]">
@@ -326,6 +327,7 @@ export function Sidebar({
                       onSelectPlagiarismSession(session.id);
                       onCloseMobile();
                     }}
+                    title={session.documentName}
                     className={cn(
                       'group flex w-full flex-col items-start rounded px-3 py-2 text-left transition-colors',
                       isSelected
@@ -333,7 +335,7 @@ export function Sidebar({
                         : 'text-[var(--text-secondary)] hover:bg-[var(--card-surface)] hover:text-[var(--text-primary)]'
                     )}
                   >
-                    <span className="line-clamp-1 text-xs font-medium text-[var(--text-primary)]">
+                    <span className="line-clamp-2 break-words text-xs font-medium text-[var(--text-primary)]">
                       {session.documentName}
                     </span>
                     <div className="mt-1 flex w-full items-center justify-between text-[10px] text-[var(--text-secondary)] font-mono">
@@ -362,7 +364,7 @@ export function Sidebar({
         </div>
 
         {/* Bottom Section */}
-        <div className="border-t border-[var(--border-muted)] p-3 space-y-0.5">
+        <div className="shrink-0 border-t border-[var(--border-muted)] p-3 space-y-0.5">
           <button
             onClick={() =>
               alert(
