@@ -69,6 +69,46 @@
   font-family: 'Michroma', sans-serif;
 }
 
+/* Session Filter Tabs (Explicit Token & Specificity Rules) */
+.session-filter-tab {
+  transition: color 250ms ease-in-out !important;
+}
+
+/* Inactive State: Dark mode #FFFFFF, Light mode #171710 */
+[data-theme='dark'] .session-filter-tab:not([data-active='true']),
+.dark .session-filter-tab:not([data-active='true']) {
+  color: #FFFFFF !important;
+}
+
+[data-theme='light'] .session-filter-tab:not([data-active='true']),
+:root:not(.dark) .session-filter-tab:not([data-active='true']) {
+  color: #171710 !important;
+}
+
+/* Hover State on Inactive Tabs: Dark mode #ECE4B4, Light mode #82774D */
+[data-theme='dark'] .session-filter-tab:not([data-active='true']):hover,
+.dark .session-filter-tab:not([data-active='true']):hover {
+  color: #ECE4B4 !important;
+}
+
+[data-theme='light'] .session-filter-tab:not([data-active='true']):hover,
+:root:not(.dark) .session-filter-tab:not([data-active='true']):hover {
+  color: #82774D !important;
+}
+
+/* Active State: Keep champagne background, text #080808 in Dark mode; Keep existing styling in Light mode */
+[data-theme='dark'] .session-filter-tab[data-active='true'],
+.dark .session-filter-tab[data-active='true'] {
+  color: #080808 !important;
+  font-weight: 600 !important;
+}
+
+[data-theme='light'] .session-filter-tab[data-active='true'],
+:root:not(.dark) .session-filter-tab[data-active='true'] {
+  color: #F7F5EB !important;
+  font-weight: 600 !important;
+}
+
 /* Custom Scrollbars */
 ::-webkit-scrollbar {
   width: 6px;

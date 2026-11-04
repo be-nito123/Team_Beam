@@ -139,7 +139,7 @@ export function HistoryView({
               onValueChange={(newId) => {
                 if (newId) setActiveTab(newId as SessionFilterTabId);
               }}
-              enableHover={true}
+              enableHover={false}
               transition={{ type: 'spring', bounce: 0.2, duration: 0.3 }}
               className="bg-[var(--btn-primary-bg)] rounded-md shadow-sm"
             >
@@ -151,15 +151,14 @@ export function HistoryView({
                     data-id={tab.id}
                     type="button"
                     className={cn(
-                      'px-3.5 py-1.5 font-mono text-[11px] uppercase tracking-wider rounded-md whitespace-nowrap transition-colors duration-150',
-                      // High-contrast text states in both Light and Dark themes:
-                      // Active/Highlighted: text uses --btn-primary-text (#080808 in dark, #F7F5EB in light)
-                      // Inactive: text uses --text-secondary (#B9B49B in dark, #716D5D in light)
-                      // Hover inactive: text brightens via hover:text-[var(--text-primary)]
+                      'session-filter-tab px-3.5 py-1.5 font-mono text-[11px] uppercase tracking-wider rounded-md whitespace-nowrap transition-colors duration-250 cursor-pointer',
+                      // Explicit text colors across Dark and Light modes:
+                      // Active: Dark text #080808 on champagne background (dark) / ivory text on dark pill (light)
+                      // Inactive: Pure white #FFFFFF (dark) / charcoal #171710 (light)
+                      // Hover: Gold #ECE4B4 (dark) / muted olive-gold #82774D (light)
                       isSelected
-                        ? 'text-[var(--btn-primary-text)] font-semibold'
-                        : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] font-medium',
-                      'data-[highlighted=true]:text-[var(--btn-primary-text)] data-[highlighted=true]:font-semibold'
+                        ? 'font-semibold text-[#080808] dark:text-[#080808]'
+                        : 'font-medium text-[#171710] dark:text-[#FFFFFF] hover:text-[#82774D] dark:hover:text-[#ECE4B4]'
                     )}
                   >
                     <span>

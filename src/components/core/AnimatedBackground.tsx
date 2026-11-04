@@ -76,7 +76,7 @@ export function AnimatedBackground({
             key: id || index,
             ...sharedProps,
             className: cn(
-              'relative inline-flex items-center justify-center z-10 select-none transition-colors duration-150',
+              'relative inline-flex items-center justify-center z-10 select-none transition-colors duration-250',
               child.props.className
             ),
             'aria-selected': isSelected,
