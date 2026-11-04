@@ -14,8 +14,22 @@ import {
   setMockMode,
 } from '@/services/api';
 
+const AI_TAB_KEY = 'veritrace-ai-tab';
+
 export function useVerification() {
-  const [currentTab, setCurrentTab] = useState<'dashboard' | 'results' | 'history'>('dashboard');
+  const [currentTab, setCurrentTab] = useState<'dashboard' | 'results' | 'history'>(() => {
+    try {
+      const saved = localStorage.getItem(AI_TAB_KEY);
+      if (saved === 'dashboard' || saved === 'results' || saved === 'history') return saved;
+    } catch {}
+    return 'dashboard';
+  });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(AI_TAB_KEY, currentTab);
+    } catch {}
+  }, [currentTab]);
   const [activeResult, setActiveResult] = useState<VerificationResult | null>(null);
   const [recentSessions, setRecentSessions] = useState<HistorySession[]>([]);
   const [isLoading, setIsLoading] = useState(false);

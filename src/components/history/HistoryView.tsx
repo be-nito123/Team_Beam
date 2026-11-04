@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
   Search,
   Calendar,
@@ -8,8 +8,10 @@ import {
   XCircle,
   AlertCircle,
   Clock,
+  Filter,
 } from 'lucide-react';
 import { HistorySession } from '@/types/verification';
+import { AnimatedBackground } from '@/components/core/animated-background';
 import { cn } from '@/lib/utils';
 
 interface HistoryViewProps {
@@ -18,29 +20,79 @@ interface HistoryViewProps {
   onNewAnalysis: () => void;
 }
 
+const FILTER_STORAGE_KEY = 'veritrace-session-filter';
+
+type SessionFilterTabId = 'ALL SESSIONS' | 'HAS CONTRADICTIONS' | '100% SUPPORTED' | 'HAS UNSUPPORTED';
+
 export function HistoryView({
   sessions,
   onSelectSession,
   onNewAnalysis,
 }: HistoryViewProps) {
   const [searchQuery, setSearchQuery] = useState('');
-  const [filterCriterion, setFilterCriterion] = useState<'ALL' | 'CONTRADICTED' | 'SUPPORTED' | 'UNSUPPORTED'>('ALL');
 
+  // Persist filter selection across refresh & theme toggles
+  const [activeTab, setActiveTab] = useState<SessionFilterTabId>(() => {
+    try {
+      const saved = localStorage.getItem(FILTER_STORAGE_KEY);
+      if (
+        saved === 'ALL SESSIONS' ||
+        saved === 'HAS CONTRADICTIONS' ||
+        saved === '100% SUPPORTED' ||
+        saved === 'HAS UNSUPPORTED'
+      ) {
+        return saved;
+      }
+    } catch {}
+    return 'ALL SESSIONS';
+  });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(FILTER_STORAGE_KEY, activeTab);
+    } catch {}
+  }, [activeTab]);
+
+  // Real data calculations (No hardcoded counts or fake records)
+  const realCounts = useMemo(() => {
+    return {
+      all: sessions.length,
+      contradictions: sessions.filter((s) => s.summary.contradicted > 0).length,
+      supported: sessions.filter((s) => s.summary.total > 0 && s.summary.supported === s.summary.total).length,
+      unsupported: sessions.filter((s) => s.summary.unsupported > 0).length,
+    };
+  }, [sessions]);
+
+  const tabs: { id: SessionFilterTabId; label: string; count: number }[] = [
+    { id: 'ALL SESSIONS', label: 'ALL SESSIONS', count: realCounts.all },
+    { id: 'HAS CONTRADICTIONS', label: 'HAS CONTRADICTIONS', count: realCounts.contradictions },
+    { id: '100% SUPPORTED', label: '100% SUPPORTED', count: realCounts.supported },
+    { id: 'HAS UNSUPPORTED', label: 'HAS UNSUPPORTED', count: realCounts.unsupported },
+  ];
+
+  // Wire real session data filter logic
   const filteredSessions = useMemo(() => {
     return sessions.filter((s) => {
       const matchesSearch =
+        !searchQuery.trim() ||
         s.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         s.aiClaimExcerpt.toLowerCase().includes(searchQuery.toLowerCase()) ||
         s.referenceExcerpt.toLowerCase().includes(searchQuery.toLowerCase());
 
       if (!matchesSearch) return false;
 
-      if (filterCriterion === 'CONTRADICTED') return s.summary.contradicted > 0;
-      if (filterCriterion === 'SUPPORTED') return s.summary.supported === s.summary.total;
-      if (filterCriterion === 'UNSUPPORTED') return s.summary.unsupported > 0;
-      return true;
+      if (activeTab === 'HAS CONTRADICTIONS') {
+        return s.summary.contradicted > 0;
+      }
+      if (activeTab === '100% SUPPORTED') {
+        return s.summary.total > 0 && s.summary.supported === s.summary.total;
+      }
+      if (activeTab === 'HAS UNSUPPORTED') {
+        return s.summary.unsupported > 0;
+      }
+      return true; // 'ALL SESSIONS'
     });
-  }, [sessions, searchQuery, filterCriterion]);
+  }, [sessions, searchQuery, activeTab]);
 
   return (
     <div className="flex flex-col w-full min-h-full p-4 md:p-6 lg:p-8 space-y-6 max-w-[1580px] mx-auto text-[var(--text-primary)]">
@@ -58,14 +110,14 @@ export function HistoryView({
 
         <button
           onClick={onNewAnalysis}
-          className="rounded border border-[var(--border-color)] bg-[var(--btn-primary-bg)] px-4 py-2 font-michroma text-xs font-semibold uppercase tracking-wider text-[var(--btn-primary-text)] hover:opacity-90 transition-all"
+          className="rounded border border-[var(--border-color)] bg-[var(--btn-primary-bg)] px-4 py-2 font-michroma text-xs font-semibold uppercase tracking-wider text-[var(--btn-primary-text)] hover:opacity-90 transition-all shadow-sm"
         >
           + NEW VERIFICATION
         </button>
       </div>
 
       {/* Search and Filters Bar */}
-      <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
+      <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
         {/* Search */}
         <div className="relative flex-1 max-w-md">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--text-secondary)]" />
@@ -78,39 +130,57 @@ export function HistoryView({
           />
         </div>
 
-        {/* Filter Pills */}
-        <div className="flex items-center space-x-2 overflow-x-auto pb-1 md:pb-0">
-          {(
-            [
-              { id: 'ALL', label: 'ALL SESSIONS' },
-              { id: 'CONTRADICTED', label: 'HAS CONTRADICTIONS' },
-              { id: 'SUPPORTED', label: '100% SUPPORTED' },
-              { id: 'UNSUPPORTED', label: 'HAS UNSUPPORTED' },
-            ] as const
-          ).map((item) => (
-            <button
-              key={item.id}
-              onClick={() => setFilterCriterion(item.id)}
-              className={cn(
-                'whitespace-nowrap rounded border px-3 py-1.5 font-mono text-[10px] uppercase tracking-wider transition-colors',
-                filterCriterion === item.id
-                  ? 'border-[var(--text-primary)] bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] font-bold'
-                  : 'border-[var(--border-color)] bg-[var(--card-surface)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--border-hover)]'
-              )}
+        {/* AnimatedBackground Filter Tabs */}
+        <div className="flex items-center overflow-x-auto pb-1 lg:pb-0">
+          <div className="rounded-lg border border-[var(--border-color)] bg-[var(--card-surface)] p-1 shadow-sm">
+            <AnimatedBackground
+              defaultValue="ALL SESSIONS"
+              value={activeTab}
+              onValueChange={(newId) => {
+                if (newId) setActiveTab(newId as SessionFilterTabId);
+              }}
+              enableHover={true}
+              transition={{ type: 'spring', bounce: 0.2, duration: 0.3 }}
+              className="bg-[var(--btn-primary-bg)] rounded-md shadow-sm"
             >
-              {item.label}
-            </button>
-          ))}
+              {tabs.map((tab) => {
+                const isSelected = activeTab === tab.id;
+                return (
+                  <button
+                    key={tab.id}
+                    data-id={tab.id}
+                    type="button"
+                    className={cn(
+                      'px-3.5 py-1.5 font-mono text-[11px] uppercase tracking-wider rounded-md whitespace-nowrap transition-colors duration-150',
+                      // High-contrast text states in both Light and Dark themes:
+                      // Active/Highlighted: text uses --btn-primary-text (#080808 in dark, #F7F5EB in light)
+                      // Inactive: text uses --text-secondary (#B9B49B in dark, #716D5D in light)
+                      // Hover inactive: text brightens via hover:text-[var(--text-primary)]
+                      isSelected
+                        ? 'text-[var(--btn-primary-text)] font-semibold'
+                        : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] font-medium',
+                      'data-[highlighted=true]:text-[var(--btn-primary-text)] data-[highlighted=true]:font-semibold'
+                    )}
+                  >
+                    <span>
+                      {tab.label} ({tab.count})
+                    </span>
+                  </button>
+                );
+              })}
+            </AnimatedBackground>
+          </div>
         </div>
       </div>
 
       {/* Sessions Grid */}
       {filteredSessions.length === 0 ? (
-        <div className="glass-panel flex flex-col items-center justify-center rounded-xl p-16 text-center">
+        <div className="glass-panel flex flex-col items-center justify-center rounded-xl p-16 text-center border-[var(--border-muted)]">
           <Clock className="h-10 w-10 text-[var(--text-secondary)]/40 mb-3" />
           <p className="font-michroma text-sm text-[var(--text-primary)]">NO MATCHING SESSIONS</p>
           <p className="text-xs font-mono text-[var(--text-secondary)] mt-1">
-            Try adjusting your query or filter parameters.
+            No records match the current filter "{activeTab}"
+            {searchQuery ? ` and query "${searchQuery}"` : ''}.
           </p>
         </div>
       ) : (
@@ -119,7 +189,7 @@ export function HistoryView({
             <div
               key={session.id}
               onClick={() => onSelectSession(session.id)}
-              className="glass-panel group relative flex flex-col justify-between rounded-xl p-5 md:p-6 transition-all duration-200 cursor-pointer border-[var(--border-color)] hover:border-[var(--border-hover)]"
+              className="glass-panel group relative flex flex-col justify-between rounded-xl p-5 md:p-6 transition-all duration-200 cursor-pointer border-[var(--border-color)] hover:border-[var(--border-hover)] hover:shadow-md"
             >
               <div>
                 {/* Timestamp & ID */}

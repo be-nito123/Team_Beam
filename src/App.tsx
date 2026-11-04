@@ -12,6 +12,8 @@ import { usePlagiarism } from '@/hooks/usePlagiarism';
 import { useTheme } from '@/hooks/useTheme';
 
 const MODULE_STORAGE_KEY = 'veritrace-active-module';
+const AI_TAB_STORAGE_KEY = 'veritrace-ai-tab';
+const PLAG_TAB_STORAGE_KEY = 'veritrace-plag-tab';
 
 export function App() {
   const { theme, toggleTheme } = useTheme();
