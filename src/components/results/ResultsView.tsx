@@ -165,53 +165,29 @@ export function ResultsView({
             transition={{ type: 'spring', bounce: 0.2, duration: 0.3 }}
             className="bg-[var(--btn-primary-bg)] rounded-md shadow-sm"
           >
-            <button
-              data-id="ALL"
-              className={cn(
-                'px-3.5 py-1.5 font-mono text-xs font-semibold uppercase tracking-wider transition-colors',
-                activeFilter === 'ALL'
-                  ? 'text-[var(--btn-primary-text)]'
-                  : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
-              )}
-            >
-              ALL ({total})
-            </button>
-
-            <button
-              data-id="SUPPORTED"
-              className={cn(
-                'px-3.5 py-1.5 font-mono text-xs font-semibold uppercase tracking-wider transition-colors',
-                activeFilter === 'SUPPORTED'
-                  ? 'text-[var(--btn-primary-text)]'
-                  : 'text-[var(--text-secondary)] hover:text-[var(--status-supported)]'
-              )}
-            >
-              SUPPORTED ({supported})
-            </button>
-
-            <button
-              data-id="CONTRADICTED"
-              className={cn(
-                'px-3.5 py-1.5 font-mono text-xs font-semibold uppercase tracking-wider transition-colors',
-                activeFilter === 'CONTRADICTED'
-                  ? 'text-[var(--btn-primary-text)]'
-                  : 'text-[var(--text-secondary)] hover:text-[var(--status-contradicted)]'
-              )}
-            >
-              CONTRADICTED ({contradicted})
-            </button>
-
-            <button
-              data-id="UNSUPPORTED"
-              className={cn(
-                'px-3.5 py-1.5 font-mono text-xs font-semibold uppercase tracking-wider transition-colors',
-                activeFilter === 'UNSUPPORTED'
-                  ? 'text-[var(--btn-primary-text)]'
-                  : 'text-[var(--text-secondary)] hover:text-[var(--status-unsupported)]'
-              )}
-            >
-              UNSUPPORTED ({unsupported})
-            </button>
+            {[
+              { id: 'ALL', label: `ALL (${total})` },
+              { id: 'SUPPORTED', label: `SUPPORTED (${supported})` },
+              { id: 'CONTRADICTED', label: `CONTRADICTED (${contradicted})` },
+              { id: 'UNSUPPORTED', label: `UNSUPPORTED (${unsupported})` },
+            ].map((tab) => {
+              const isSelected = activeFilter === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  data-id={tab.id}
+                  type="button"
+                  className={cn(
+                    'result-filter-tab px-3.5 py-1.5 font-mono text-xs font-semibold uppercase tracking-wider rounded-md whitespace-nowrap transition-colors duration-250 cursor-pointer',
+                    isSelected
+                      ? 'font-semibold text-[#080808] dark:text-[#080808]'
+                      : 'font-medium text-[#171710] dark:text-[#FFFFFF] hover:text-[#82774D] dark:hover:text-[#ECE4B4]'
+                  )}
+                >
+                  <span>{tab.label}</span>
+                </button>
+              );
+            })}
           </AnimatedBackground>
         </div>
       </div>

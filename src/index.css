@@ -109,6 +109,51 @@
   font-weight: 600 !important;
 }
 
+/* Result Filter Tabs (ALL, SUPPORTED, CONTRADICTED, UNSUPPORTED) */
+.result-filter-tab {
+  background-color: transparent !important;
+  transition: color 250ms ease-in-out !important;
+}
+
+/* Inactive State: Dark mode pure white #FFFFFF, Light mode charcoal #171710, Background Transparent */
+[data-theme='dark'] .result-filter-tab:not([data-active='true']),
+.dark .result-filter-tab:not([data-active='true']) {
+  color: #FFFFFF !important;
+  background-color: transparent !important;
+}
+
+[data-theme='light'] .result-filter-tab:not([data-active='true']),
+:root:not(.dark) .result-filter-tab:not([data-active='true']) {
+  color: #171710 !important;
+  background-color: transparent !important;
+}
+
+/* Hover State on Inactive Tabs: Dark mode champagne gold #ECE4B4, Light mode olive-gold #82774D, Background Transparent */
+[data-theme='dark'] .result-filter-tab:not([data-active='true']):hover,
+.dark .result-filter-tab:not([data-active='true']):hover {
+  color: #ECE4B4 !important;
+  background-color: transparent !important;
+}
+
+[data-theme='light'] .result-filter-tab:not([data-active='true']):hover,
+:root:not(.dark) .result-filter-tab:not([data-active='true']):hover {
+  color: #82774D !important;
+  background-color: transparent !important;
+}
+
+/* Active State: Dark mode text #080808 on champagne pill #ECE4B4; Light mode text #FFFFFF on dark pill #171710 */
+[data-theme='dark'] .result-filter-tab[data-active='true'],
+.dark .result-filter-tab[data-active='true'] {
+  color: #080808 !important;
+  font-weight: 600 !important;
+}
+
+[data-theme='light'] .result-filter-tab[data-active='true'],
+:root:not(.dark) .result-filter-tab[data-active='true'] {
+  color: #FFFFFF !important;
+  font-weight: 600 !important;
+}
+
 /* Custom Scrollbars */
 ::-webkit-scrollbar {
   width: 6px;

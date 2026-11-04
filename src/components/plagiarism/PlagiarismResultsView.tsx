@@ -222,53 +222,29 @@ export function PlagiarismResultsView({
             transition={{ type: 'spring', bounce: 0.2, duration: 0.3 }}
             className="bg-[var(--btn-primary-bg)] rounded-md shadow-sm"
           >
-            <button
-              data-id="ALL"
-              className={cn(
-                'px-3.5 py-1.5 font-mono text-xs font-semibold uppercase tracking-wider transition-colors',
-                activeFilter === 'ALL'
-                  ? 'text-[var(--btn-primary-text)]'
-                  : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
-              )}
-            >
-              ALL ({result.matches.length})
-            </button>
-
-            <button
-              data-id="EXACT"
-              className={cn(
-                'px-3.5 py-1.5 font-mono text-xs font-semibold uppercase tracking-wider transition-colors',
-                activeFilter === 'EXACT'
-                  ? 'text-[var(--btn-primary-text)]'
-                  : 'text-[var(--text-secondary)] hover:text-[var(--status-contradicted)]'
-              )}
-            >
-              EXACT ({result.matches.filter((m) => m.classification === 'EXACT').length})
-            </button>
-
-            <button
-              data-id="PARAPHRASED"
-              className={cn(
-                'px-3.5 py-1.5 font-mono text-xs font-semibold uppercase tracking-wider transition-colors',
-                activeFilter === 'PARAPHRASED'
-                  ? 'text-[var(--btn-primary-text)]'
-                  : 'text-[var(--text-secondary)] hover:text-[var(--status-unsupported)]'
-              )}
-            >
-              PARAPHRASED ({result.matches.filter((m) => m.classification === 'PARAPHRASED').length})
-            </button>
-
-            <button
-              data-id="ORIGINAL"
-              className={cn(
-                'px-3.5 py-1.5 font-mono text-xs font-semibold uppercase tracking-wider transition-colors',
-                activeFilter === 'ORIGINAL'
-                  ? 'text-[var(--btn-primary-text)]'
-                  : 'text-[var(--text-secondary)] hover:text-[var(--status-supported)]'
-              )}
-            >
-              ORIGINAL ({result.matches.filter((m) => m.classification === 'ORIGINAL').length})
-            </button>
+            {[
+              { id: 'ALL', label: `ALL (${result.matches.length})` },
+              { id: 'EXACT', label: `EXACT (${result.matches.filter((m) => m.classification === 'EXACT').length})` },
+              { id: 'PARAPHRASED', label: `PARAPHRASED (${result.matches.filter((m) => m.classification === 'PARAPHRASED').length})` },
+              { id: 'ORIGINAL', label: `ORIGINAL (${result.matches.filter((m) => m.classification === 'ORIGINAL').length})` },
+            ].map((tab) => {
+              const isSelected = activeFilter === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  data-id={tab.id}
+                  type="button"
+                  className={cn(
+                    'result-filter-tab px-3.5 py-1.5 font-mono text-xs font-semibold uppercase tracking-wider rounded-md whitespace-nowrap transition-colors duration-250 cursor-pointer',
+                    isSelected
+                      ? 'font-semibold text-[#080808] dark:text-[#080808]'
+                      : 'font-medium text-[#171710] dark:text-[#FFFFFF] hover:text-[#82774D] dark:hover:text-[#ECE4B4]'
+                  )}
+                >
+                  <span>{tab.label}</span>
+                </button>
+              );
+            })}
           </AnimatedBackground>
         </div>
       </div>

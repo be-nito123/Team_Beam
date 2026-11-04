@@ -51,7 +51,7 @@ export function AnimatedBackground({
         if (!child) return null;
         const id = child.props['data-id'];
         const isSelected = activeId === id;
-        const isHighlighted = currentHighlight === id;
+        const isHovered = hoveredId === id;
 
         const sharedProps = {
           onClick: () => {
@@ -59,13 +59,21 @@ export function AnimatedBackground({
             handleSetActiveId(id);
           },
           ...(enableHover && {
-            onMouseEnter: () => setHoveredId(id),
-            onMouseLeave: () => setHoveredId(null),
+            onMouseEnter: (e: any) => {
+              child.props.onMouseEnter?.(e);
+              setHoveredId(id);
+            },
+            onMouseLeave: (e: any) => {
+              child.props.onMouseLeave?.(e);
+              setHoveredId(null);
+            },
           }),
-          onFocus: () => {
+          onFocus: (e: any) => {
+            child.props.onFocus?.(e);
             if (enableHover) setHoveredId(id);
           },
-          onBlur: () => {
+          onBlur: (e: any) => {
+            child.props.onBlur?.(e);
             if (enableHover) setHoveredId(null);
           },
         };
@@ -81,13 +89,14 @@ export function AnimatedBackground({
             ),
             'aria-selected': isSelected,
             'data-active': isSelected ? 'true' : 'false',
-            'data-highlighted': isHighlighted ? 'true' : 'false',
+            'data-hovered': isHovered ? 'true' : 'false',
+            'data-highlighted': isSelected ? 'true' : 'false',
           },
           <>
             <span className="relative z-10 w-full text-center pointer-events-none">
               {child.props.children}
             </span>
-            {currentHighlight === id && (
+            {isSelected && (
               <motion.span
                 layoutId={`background-${uniqueId}`}
                 className={cn('absolute inset-0 z-0 rounded-md', className)}
