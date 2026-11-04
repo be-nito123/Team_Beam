@@ -1,0 +1,1 @@
+Superconducting qubits and trapped-ion processors exploit quantum superposition and quantum entanglement to execute specialized quantum algorithms.

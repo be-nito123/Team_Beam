@@ -1,33 +1,58 @@
 import React from 'react';
-import { Menu, ShieldAlert, Cpu } from 'lucide-react';
+import { Menu, Sun, Moon, Sparkles, Files, Cpu } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { Theme } from '@/hooks/useTheme';
+
+export type ProductModule = 'ai-verification' | 'plagiarism';
 
 interface HeaderProps {
+  activeModule: ProductModule;
+  onSwitchModule: (module: ProductModule) => void;
   currentTab: 'dashboard' | 'results' | 'history';
   onOpenMobileSidebar: () => void;
   isMockMode: boolean;
   onToggleMockMode?: () => void;
   activeTitle?: string;
+  theme: Theme;
+  onToggleTheme: () => void;
 }
 
 export function Header({
+  activeModule,
+  onSwitchModule,
   currentTab,
   onOpenMobileSidebar,
   isMockMode,
   onToggleMockMode,
   activeTitle,
+  theme,
+  onToggleTheme,
 }: HeaderProps) {
-  const tabTitles: Record<string, string> = {
+  const aiTabTitles: Record<string, string> = {
     dashboard: 'VERIFICATION COCKPIT',
     results: 'EVIDENCE EXTRACTION MATRIX',
     history: 'VERIFICATION REGISTRY',
   };
 
+  const plagTabTitles: Record<string, string> = {
+    dashboard: 'SIMILARITY COCKPIT',
+    results: 'ORIGINALITY AUDIT REPORT',
+    history: 'PLAGIARISM REGISTRY',
+  };
+
+  const currentModuleTitle =
+    activeModule === 'ai-verification'
+      ? aiTabTitles[currentTab] || currentTab.toUpperCase()
+      : plagTabTitles[currentTab] || currentTab.toUpperCase();
+
   return (
-    <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-[rgba(236,228,180,0.15)] bg-[#080808]/90 px-4 md:px-8 backdrop-blur-md">
+    <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-[var(--border-muted)] bg-[var(--header-bg)] px-4 md:px-8 backdrop-blur-md transition-colors duration-250">
+      
+      {/* Left: Mobile Sidebar Trigger & Breadcrumbs */}
       <div className="flex items-center space-x-3">
         <button
           onClick={onOpenMobileSidebar}
-          className="rounded p-2 text-[#ECE4B4] hover:bg-[rgba(255,255,255,0.05)] md:hidden"
+          className="rounded p-2 text-[var(--text-primary)] hover:bg-[var(--card-surface)] md:hidden"
           aria-label="Open sidebar"
         >
           <Menu className="h-5 w-5" />
@@ -35,49 +60,93 @@ export function Header({
 
         <div className="flex flex-col">
           <div className="flex items-center space-x-2">
-            <span className="font-michroma text-[10px] uppercase tracking-widest text-[#B9B49B]">
+            <span className="font-michroma text-[10px] uppercase tracking-widest text-[var(--text-secondary)]">
               VERITRACE //
             </span>
-            <span className="font-michroma text-xs tracking-wider text-[#ECE4B4]">
-              {tabTitles[currentTab] || currentTab.toUpperCase()}
+            <span className="font-michroma text-xs tracking-wider text-[var(--text-primary)]">
+              {currentModuleTitle}
             </span>
           </div>
           {activeTitle && currentTab === 'results' && (
-            <span className="max-w-[280px] md:max-w-[450px] truncate text-[11px] text-[#B9B49B]/80 font-mono">
+            <span className="max-w-[200px] sm:max-w-[320px] md:max-w-[420px] truncate text-[11px] text-[var(--text-secondary)] font-mono">
               {activeTitle}
             </span>
           )}
         </div>
       </div>
 
-      <div className="flex items-center space-x-3">
-        {/* Mock / Live State Pill */}
+      {/* Center: PRODUCT SWITCHER TABS */}
+      <div className="hidden sm:flex items-center rounded-lg border border-[var(--border-color)] bg-[var(--card-surface)] p-1">
         <button
-          onClick={onToggleMockMode}
-          title="Click to toggle Mock / Live mode"
-          className="flex items-center space-x-1.5 rounded border border-[rgba(236,228,180,0.22)] bg-[rgba(255,255,255,0.02)] px-2.5 py-1 text-xs transition-all hover:border-[rgba(236,228,180,0.4)]"
-        >
-          {isMockMode ? (
-            <>
-              <span className="h-2 w-2 rounded-full bg-[#FBBF24] animate-ping" />
-              <span className="font-mono text-[10px] uppercase tracking-wider text-[#FBBF24]">
-                MOCK MODE (STANDALONE)
-              </span>
-            </>
-          ) : (
-            <>
-              <span className="h-2 w-2 rounded-full bg-[#4ADE80]" />
-              <span className="font-mono text-[10px] uppercase tracking-wider text-[#4ADE80]">
-                API CONNECTED
-              </span>
-            </>
+          type="button"
+          onClick={() => onSwitchModule('ai-verification')}
+          className={cn(
+            'flex items-center space-x-2 rounded-md px-3.5 py-1.5 font-michroma text-[11px] font-semibold uppercase tracking-wider transition-all duration-200',
+            activeModule === 'ai-verification'
+              ? 'bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] shadow-sm'
+              : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
           )}
+        >
+          <Sparkles className="h-3.5 w-3.5" />
+          <span>AI VERIFICATION</span>
         </button>
 
-        <div className="hidden sm:flex items-center space-x-1 rounded border border-[rgba(236,228,180,0.1)] px-2 py-1 text-[10px] font-mono text-[#B9B49B]/70">
-          <Cpu className="h-3 w-3 text-[#ECE4B4]" />
-          <span>V1.0</span>
-        </div>
+        <button
+          type="button"
+          onClick={() => onSwitchModule('plagiarism')}
+          className={cn(
+            'flex items-center space-x-2 rounded-md px-3.5 py-1.5 font-michroma text-[11px] font-semibold uppercase tracking-wider transition-all duration-200',
+            activeModule === 'plagiarism'
+              ? 'bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] shadow-sm'
+              : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+          )}
+        >
+          <Files className="h-3.5 w-3.5" />
+          <span>PLAGIARISM CHECKER</span>
+        </button>
+      </div>
+
+      {/* Right: Theme Toggle & Status Pills */}
+      <div className="flex items-center space-x-2.5">
+        {/* Mock/Live State Pill for AI verification */}
+        {activeModule === 'ai-verification' && (
+          <button
+            onClick={onToggleMockMode}
+            title="Toggle Mock / Live verification mode"
+            className="hidden md:flex items-center space-x-1.5 rounded border border-[var(--border-muted)] bg-[var(--card-surface)] px-2.5 py-1 text-xs transition-all hover:border-[var(--border-hover)]"
+          >
+            {isMockMode ? (
+              <>
+                <span className="h-2 w-2 rounded-full bg-[var(--status-unsupported)] animate-ping" />
+                <span className="font-mono text-[10px] uppercase tracking-wider text-[var(--status-unsupported)]">
+                  MOCK MODE
+                </span>
+              </>
+            ) : (
+              <>
+                <span className="h-2 w-2 rounded-full bg-[var(--status-supported)]" />
+                <span className="font-mono text-[10px] uppercase tracking-wider text-[var(--status-supported)]">
+                  API LIVE
+                </span>
+              </>
+            )}
+          </button>
+        )}
+
+        {/* Sun / Moon Theme Toggle */}
+        <button
+          type="button"
+          onClick={onToggleTheme}
+          title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} theme`}
+          className="flex h-9 w-9 items-center justify-center rounded-lg border border-[var(--border-color)] bg-[var(--card-surface)] text-[var(--text-primary)] transition-all hover:border-[var(--border-hover)] hover:bg-[var(--panel-bg)] active:scale-95 shadow-sm"
+          aria-label="Toggle theme"
+        >
+          {theme === 'dark' ? (
+            <Sun className="h-4 w-4 text-[var(--text-primary)] transition-transform hover:rotate-45" />
+          ) : (
+            <Moon className="h-4 w-4 text-[var(--text-primary)] transition-transform hover:-rotate-12" />
+          )}
+        </button>
       </div>
     </header>
   );

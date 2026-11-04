@@ -57,19 +57,19 @@ export function DashboardView({
       <div className="grid w-full max-w-[1580px] grid-cols-1 gap-4 md:gap-5 lg:grid-cols-3 lg:gap-6 items-stretch">
         
         {/* ================= PANEL 01: AI CLAIM ================= */}
-        <div className="glass-panel group relative flex flex-col rounded-xl p-5 md:p-6 transition-all duration-300 hover:border-[rgba(236,228,180,0.35)] min-h-[500px] lg:h-[calc(100vh-280px)] lg:min-h-[540px] max-h-[680px]">
+        <div className="glass-panel group relative flex flex-col rounded-xl p-5 md:p-6 transition-all duration-300 min-h-[500px] lg:h-[calc(100vh-280px)] lg:min-h-[540px] max-h-[680px]">
           {/* Header */}
-          <div className="flex items-start justify-between border-b border-[rgba(236,228,180,0.12)] pb-4">
+          <div className="flex items-start justify-between border-b border-[var(--border-muted)] pb-4">
             <div>
               <div className="flex items-baseline space-x-2">
-                <span className="font-michroma text-2xl md:text-3xl font-bold tracking-tight text-[#ECE4B4]">
+                <span className="font-michroma text-2xl md:text-3xl font-bold tracking-tight text-[var(--text-primary)]">
                   01/
                 </span>
-                <span className="font-michroma text-xs font-semibold uppercase tracking-[0.2em] text-[#ECE4B4]">
+                <span className="font-michroma text-xs font-semibold uppercase tracking-[0.2em] text-[var(--text-primary)]">
                   AI CLAIM
                 </span>
               </div>
-              <p className="mt-1 text-[11px] uppercase tracking-wider text-[#B9B49B]/70 font-mono">
+              <p className="mt-1 text-[11px] uppercase tracking-wider text-[var(--text-secondary)] font-mono">
                 GENERATED HYPOTHESIS OR LLM RESPONSE
               </p>
             </div>
@@ -79,7 +79,7 @@ export function DashboardView({
                 <button
                   type="button"
                   onClick={handleClearAiClaim}
-                  className="flex items-center space-x-1 rounded border border-[rgba(236,228,180,0.15)] px-2 py-1 text-[10px] uppercase tracking-wider text-[#B9B49B] hover:text-[#ECE4B4] hover:bg-[rgba(255,255,255,0.03)]"
+                  className="flex items-center space-x-1 rounded border border-[var(--border-muted)] px-2 py-1 text-[10px] uppercase tracking-wider text-[var(--text-secondary)] hover:text-[var(--text-primary)] bg-[var(--card-surface)]"
                   title="Clear text"
                 >
                   <RotateCcw className="h-2.5 w-2.5" />
@@ -100,31 +100,31 @@ export function DashboardView({
               placeholder="Enter the AI-generated answer..."
               disabled={isLoading}
               maxLength={10000}
-              className="input-glass h-full w-full resize-none rounded-lg p-4 font-sans text-sm leading-relaxed placeholder-[#B9B49B]/40 transition-all duration-200 focus:ring-1 focus:ring-[#ECE4B4]/40"
+              className="input-glass h-full w-full resize-none rounded-lg p-4 font-sans text-sm leading-relaxed placeholder:opacity-50 transition-all duration-200"
             />
           </div>
 
           {/* Footer: Character Counter */}
-          <div className="mt-3 flex items-center justify-between border-t border-[rgba(236,228,180,0.1)] pt-3 text-[11px] font-mono text-[#B9B49B]/80">
+          <div className="mt-3 flex items-center justify-between border-t border-[var(--border-muted)] pt-3 text-[11px] font-mono text-[var(--text-secondary)]">
             <span>INPUT BUFFER</span>
             <span>{aiClaim.length} / 10000 CHARACTERS</span>
           </div>
         </div>
 
         {/* ================= PANEL 02: YOUR CLAIM / GROUND TRUTH ================= */}
-        <div className="glass-panel group relative flex flex-col rounded-xl p-5 md:p-6 transition-all duration-300 hover:border-[rgba(236,228,180,0.35)] min-h-[500px] lg:h-[calc(100vh-280px)] lg:min-h-[540px] max-h-[680px]">
+        <div className="glass-panel group relative flex flex-col rounded-xl p-5 md:p-6 transition-all duration-300 min-h-[500px] lg:h-[calc(100vh-280px)] lg:min-h-[540px] max-h-[680px]">
           {/* Header */}
-          <div className="flex items-start justify-between border-b border-[rgba(236,228,180,0.12)] pb-4">
+          <div className="flex items-start justify-between border-b border-[var(--border-muted)] pb-4">
             <div>
               <div className="flex items-baseline space-x-2">
-                <span className="font-michroma text-2xl md:text-3xl font-bold tracking-tight text-[#ECE4B4]">
+                <span className="font-michroma text-2xl md:text-3xl font-bold tracking-tight text-[var(--text-primary)]">
                   02/
                 </span>
-                <span className="font-michroma text-xs font-semibold uppercase tracking-[0.2em] text-[#ECE4B4]">
+                <span className="font-michroma text-xs font-semibold uppercase tracking-[0.2em] text-[var(--text-primary)]">
                   YOUR CLAIM
                 </span>
               </div>
-              <p className="mt-1 text-[11px] uppercase tracking-wider text-[#B9B49B]/70 font-mono">
+              <p className="mt-1 text-[11px] uppercase tracking-wider text-[var(--text-secondary)] font-mono">
                 GROUND TRUTH EVIDENCE & REFERENCE TEXT
               </p>
             </div>
@@ -134,7 +134,7 @@ export function DashboardView({
                 <button
                   type="button"
                   onClick={handleClearReferenceClaim}
-                  className="flex items-center space-x-1 rounded border border-[rgba(236,228,180,0.15)] px-2 py-1 text-[10px] uppercase tracking-wider text-[#B9B49B] hover:text-[#ECE4B4] hover:bg-[rgba(255,255,255,0.03)]"
+                  className="flex items-center space-x-1 rounded border border-[var(--border-muted)] px-2 py-1 text-[10px] uppercase tracking-wider text-[var(--text-secondary)] hover:text-[var(--text-primary)] bg-[var(--card-surface)]"
                   title="Clear text"
                 >
                   <RotateCcw className="h-2.5 w-2.5" />
@@ -155,7 +155,7 @@ export function DashboardView({
               placeholder="Enter your claim or reference text..."
               disabled={isLoading}
               maxLength={20000}
-              className="input-glass h-full w-full resize-none rounded-lg p-4 font-sans text-sm leading-relaxed placeholder-[#B9B49B]/40 transition-all duration-200 focus:ring-1 focus:ring-[#ECE4B4]/40"
+              className="input-glass h-full w-full resize-none rounded-lg p-4 font-sans text-sm leading-relaxed placeholder:opacity-50 transition-all duration-200"
             />
           </div>
 
@@ -164,17 +164,17 @@ export function DashboardView({
             <label
               htmlFor="reference-doc-upload"
               className={cn(
-                'flex cursor-pointer items-center justify-between rounded border border-dashed border-[rgba(236,228,180,0.2)] bg-[rgba(255,255,255,0.015)] px-3 py-2 text-xs transition-colors hover:border-[rgba(236,228,180,0.45)] hover:bg-[rgba(255,255,255,0.03)]',
+                'flex cursor-pointer items-center justify-between rounded border border-dashed border-[var(--border-color)] bg-[var(--card-surface)] px-3 py-2 text-xs transition-colors hover:border-[var(--border-hover)]',
                 isLoading && 'pointer-events-none opacity-50'
               )}
             >
-              <div className="flex items-center space-x-2 text-[#ECE4B4]">
-                <Upload className="h-3.5 w-3.5 text-[#ECE4B4]" />
+              <div className="flex items-center space-x-2 text-[var(--text-primary)]">
+                <Upload className="h-3.5 w-3.5" />
                 <span className="font-mono text-[11px] uppercase tracking-wider">
                   {selectedFile ? selectedFile.name : 'ATTACH DOCUMENT (PDF, TXT, DOCX)'}
                 </span>
               </div>
-              <span className="text-[10px] font-mono text-[#B9B49B]/70">
+              <span className="text-[10px] font-mono text-[var(--text-secondary)]">
                 {selectedFile ? `${(selectedFile.size / 1024).toFixed(1)} KB` : 'OPTIONAL'}
               </span>
             </label>
@@ -193,25 +193,25 @@ export function DashboardView({
           </div>
 
           {/* Footer: Character Counter */}
-          <div className="mt-3 flex items-center justify-between border-t border-[rgba(236,228,180,0.1)] pt-3 text-[11px] font-mono text-[#B9B49B]/80">
+          <div className="mt-3 flex items-center justify-between border-t border-[var(--border-muted)] pt-3 text-[11px] font-mono text-[var(--text-secondary)]">
             <span>REFERENCE BUFFER</span>
             <span>{referenceClaim.length} / 20000 CHARACTERS</span>
           </div>
         </div>
 
         {/* ================= PANEL 03: VERIFY ================= */}
-        <div className="glass-panel group relative flex flex-col justify-between rounded-xl p-5 md:p-6 transition-all duration-300 hover:border-[rgba(236,228,180,0.35)] min-h-[500px] lg:h-[calc(100vh-280px)] lg:min-h-[540px] max-h-[680px]">
+        <div className="glass-panel group relative flex flex-col justify-between rounded-xl p-5 md:p-6 transition-all duration-300 min-h-[500px] lg:h-[calc(100vh-280px)] lg:min-h-[540px] max-h-[680px]">
           {/* Header */}
-          <div className="border-b border-[rgba(236,228,180,0.12)] pb-4">
+          <div className="border-b border-[var(--border-muted)] pb-4">
             <div className="flex items-baseline space-x-2">
-              <span className="font-michroma text-2xl md:text-3xl font-bold tracking-tight text-[#ECE4B4]">
+              <span className="font-michroma text-2xl md:text-3xl font-bold tracking-tight text-[var(--text-primary)]">
                 03/
               </span>
-              <span className="font-michroma text-xs font-semibold uppercase tracking-[0.2em] text-[#ECE4B4]">
+              <span className="font-michroma text-xs font-semibold uppercase tracking-[0.2em] text-[var(--text-primary)]">
                 VERIFY
               </span>
             </div>
-            <p className="mt-1 text-[11px] uppercase tracking-wider text-[#B9B49B]/70 font-mono">
+            <p className="mt-1 text-[11px] uppercase tracking-wider text-[var(--text-secondary)] font-mono">
               EVALUATION PIPELINE & AUDIT
             </p>
           </div>
@@ -219,22 +219,20 @@ export function DashboardView({
           {/* Center Symbol & Action */}
           <div className="my-auto flex flex-col items-center justify-center py-8">
             {/* Minimal Symbol */}
-            <div className="relative mb-8 flex h-28 w-28 items-center justify-center rounded-full border border-[rgba(236,228,180,0.22)] bg-[rgba(255,255,255,0.015)] shadow-[0_0_40px_rgba(236,228,180,0.03)]">
-              {/* Outer decorative ring */}
-              <div className="absolute inset-1.5 rounded-full border border-dashed border-[rgba(236,228,180,0.15)] animate-[spin_60s_linear_infinite]" />
+            <div className="relative mb-8 flex h-28 w-28 items-center justify-center rounded-full border border-[var(--border-color)] bg-[var(--card-surface)] shadow-sm">
+              <div className="absolute inset-1.5 rounded-full border border-dashed border-[var(--border-muted)] animate-[spin_60s_linear_infinite]" />
               
-              {/* Reticle / target center icon */}
               <Target className={cn(
-                'h-10 w-10 text-[#ECE4B4] transition-all duration-500',
-                isLoading && 'scale-110 text-[#FFF8D6] animate-pulse'
+                'h-10 w-10 text-[var(--text-primary)] transition-all duration-500',
+                isLoading && 'scale-110 animate-pulse'
               )} />
             </div>
 
             {/* Error Message display if any */}
             {error && (
-              <div className="mb-6 flex w-full max-w-sm items-start space-x-2.5 rounded border border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.08)] p-3 text-left">
-                <AlertTriangle className="h-4 w-4 shrink-0 text-[#F87171] mt-0.5" />
-                <p className="text-xs text-[#F87171] leading-relaxed">{error}</p>
+              <div className="mb-6 flex w-full max-w-sm items-start space-x-2.5 rounded border border-[var(--status-contradicted)] bg-[var(--status-contradicted-bg)] p-3 text-left">
+                <AlertTriangle className="h-4 w-4 shrink-0 text-[var(--status-contradicted)] mt-0.5" />
+                <p className="text-xs text-[var(--status-contradicted)] leading-relaxed">{error}</p>
               </div>
             )}
 
@@ -245,16 +243,16 @@ export function DashboardView({
                 onClick={handleSubmit}
                 disabled={isLoading}
                 className={cn(
-                  'relative flex h-14 w-full items-center justify-center space-x-3 rounded-lg border border-[rgba(236,228,180,0.3)] bg-[#ECE4B4] px-6 text-sm font-semibold uppercase tracking-wider text-[#080808] transition-all duration-200 overflow-hidden shadow-[0_0_20px_rgba(236,228,180,0.12)]',
+                  'relative flex h-14 w-full items-center justify-center space-x-3 rounded-lg border border-[var(--border-color)] bg-[var(--btn-primary-bg)] px-6 text-sm font-semibold uppercase tracking-wider text-[var(--btn-primary-text)] transition-all duration-200 overflow-hidden shadow-lg',
                   isLoading
                     ? 'cursor-wait opacity-90'
-                    : 'hover:bg-[#FFF8D6] hover:shadow-[0_0_30px_rgba(236,228,180,0.3)] active:scale-[0.98]'
+                    : 'hover:opacity-95 hover:shadow-[0_0_30px_rgba(236,228,180,0.2)] active:scale-[0.98]'
                 )}
               >
                 {/* BorderTrail integrated dynamically */}
                 <BorderTrail
                   size={120}
-                  className="bg-gradient-to-r from-transparent via-[#ECE4B4] to-[#4F4D3C]"
+                  className="bg-gradient-to-r from-transparent via-[var(--accent)] to-transparent"
                   transition={{
                     repeat: isLoading ? Infinity : 0,
                     duration: 2.2,
@@ -264,17 +262,17 @@ export function DashboardView({
 
                 {isLoading ? (
                   <>
-                    <Loader2 className="h-4 w-4 animate-spin text-[#080808]" />
-                    <span className="font-michroma text-xs tracking-widest text-[#080808]">
+                    <Loader2 className="h-4 w-4 animate-spin text-[var(--btn-primary-text)]" />
+                    <span className="font-michroma text-xs tracking-widest text-[var(--btn-primary-text)]">
                       AUDITING CLAIMS...
                     </span>
                   </>
                 ) : (
                   <>
-                    <span className="font-michroma text-xs tracking-widest text-[#080808]">
+                    <span className="font-michroma text-xs tracking-widest text-[var(--btn-primary-text)]">
                       RUN VERIFICATION
                     </span>
-                    <ArrowRight className="h-4 w-4 text-[#080808] transition-transform group-hover:translate-x-1" />
+                    <ArrowRight className="h-4 w-4 text-[var(--btn-primary-text)] transition-transform group-hover:translate-x-1" />
                   </>
                 )}
               </button>
@@ -282,8 +280,8 @@ export function DashboardView({
           </div>
 
           {/* Footer state indicator */}
-          <div className="border-t border-[rgba(236,228,180,0.1)] pt-3 text-center">
-            <span className="text-[10px] font-mono uppercase tracking-widest text-[#B9B49B]/60">
+          <div className="border-t border-[var(--border-muted)] pt-3 text-center">
+            <span className="text-[10px] font-mono uppercase tracking-widest text-[var(--text-secondary)]">
               {isLoading ? 'PIPELINE ACTIVE • COMMITTING REQUEST' : 'AWAITING DISPATCH • ZERO FABRICATION POLICY'}
             </span>
           </div>
