@@ -2,14 +2,13 @@ import React, { useState } from 'react';
 import {
   Upload,
   RotateCcw,
-  Sparkles,
   ArrowRight,
   Loader2,
-  FileText,
   AlertTriangle,
   Target,
 } from 'lucide-react';
 import { BorderTrail } from '@/components/core/BorderTrail';
+import { HowItWorksExample } from './HowItWorksExample';
 import { cn } from '@/lib/utils';
 import { VerificationRequest } from '@/types/verification';
 
@@ -43,25 +42,6 @@ export function DashboardView({
     onClearError?.();
   };
 
-  const handleLoadSample = (sampleType: 'quantum' | 'medical') => {
-    if (sampleType === 'quantum') {
-      setAiClaim(
-        `Trapped-ion quantum processors achieve single-qubit gate fidelities exceeding 99.98% at 4 Kelvin operation. Two-qubit entangling gates operate with a duration of 14 microseconds under laser Raman transitions. The coherence time T2 is preserved up to 12 minutes without dynamical decoupling pulses. The system architecture uses barium-137 isotopes exclusively.`
-      );
-      setReferenceClaim(
-        `Experimental verification of 171Yb+ and 137Ba+ ion traps within closed-cycle 4K cryostats demonstrates single-qubit randomized benchmarking fidelity of 99.982(4)% at 4.2 Kelvin. Two-qubit Mølmer-Sørensen gates achieved an average duration of 28.5 microseconds. Coherence time T2 without dynamical decoupling pulses was measured at 1.84 seconds; pulsed CPMG dynamical decoupling extends T2 to 8.2 minutes. The test bench utilizes ytterbium-171 as the primary computational qubit with sympathetic cooling via barium-137 ions.`
-      );
-    } else {
-      setAiClaim(
-        `Empagliflozin reduced all-cause cardiovascular mortality by 38% in chronic kidney disease cohorts. Hospitalization for heart failure was lowered by 35%. Severe hypoglycemic events increased four-fold.`
-      );
-      setReferenceClaim(
-        `Results from the multi-center trial confirmed that empagliflozin conferred a 38% relative risk reduction in cardiovascular death. Heart failure hospitalization was reduced by 35% compared to placebo. Incidences of severe hypoglycemia remained equivalent across treatment and control arms.`
-      );
-    }
-    onClearError?.();
-  };
-
   const handleSubmit = async () => {
     if (isLoading) return;
     await onRunVerification({
@@ -72,12 +52,12 @@ export function DashboardView({
   };
 
   return (
-    <div className="flex h-full w-full items-center justify-center p-4 md:p-6 lg:p-8">
+    <div className="flex min-h-full w-full flex-col items-center justify-start p-4 md:p-6 lg:p-8 space-y-8">
       {/* Exactly three equal-height panels, horizontal, centered */}
       <div className="grid w-full max-w-[1580px] grid-cols-1 gap-4 md:gap-5 lg:grid-cols-3 lg:gap-6 items-stretch">
         
         {/* ================= PANEL 01: AI CLAIM ================= */}
-        <div className="glass-panel group relative flex flex-col rounded-xl p-5 md:p-6 transition-all duration-300 hover:border-[rgba(236,228,180,0.35)] min-h-[520px] lg:h-[calc(100vh-140px)] max-h-[720px]">
+        <div className="glass-panel group relative flex flex-col rounded-xl p-5 md:p-6 transition-all duration-300 hover:border-[rgba(236,228,180,0.35)] min-h-[500px] lg:h-[calc(100vh-280px)] lg:min-h-[540px] max-h-[680px]">
           {/* Header */}
           <div className="flex items-start justify-between border-b border-[rgba(236,228,180,0.12)] pb-4">
             <div>
@@ -95,16 +75,6 @@ export function DashboardView({
             </div>
 
             <div className="flex items-center space-x-2">
-              <button
-                type="button"
-                onClick={() => handleLoadSample('quantum')}
-                className="hidden xl:inline-flex items-center space-x-1 rounded border border-[rgba(236,228,180,0.15)] bg-[rgba(255,255,255,0.02)] px-2 py-1 text-[10px] uppercase font-mono text-[#ECE4B4]/80 hover:bg-[rgba(236,228,180,0.08)] hover:text-[#ECE4B4]"
-                title="Populate test sample"
-              >
-                <Sparkles className="h-3 w-3" />
-                <span>Sample</span>
-              </button>
-
               {aiClaim && (
                 <button
                   type="button"
@@ -142,7 +112,7 @@ export function DashboardView({
         </div>
 
         {/* ================= PANEL 02: YOUR CLAIM / GROUND TRUTH ================= */}
-        <div className="glass-panel group relative flex flex-col rounded-xl p-5 md:p-6 transition-all duration-300 hover:border-[rgba(236,228,180,0.35)] min-h-[520px] lg:h-[calc(100vh-140px)] max-h-[720px]">
+        <div className="glass-panel group relative flex flex-col rounded-xl p-5 md:p-6 transition-all duration-300 hover:border-[rgba(236,228,180,0.35)] min-h-[500px] lg:h-[calc(100vh-280px)] lg:min-h-[540px] max-h-[680px]">
           {/* Header */}
           <div className="flex items-start justify-between border-b border-[rgba(236,228,180,0.12)] pb-4">
             <div>
@@ -230,7 +200,7 @@ export function DashboardView({
         </div>
 
         {/* ================= PANEL 03: VERIFY ================= */}
-        <div className="glass-panel group relative flex flex-col justify-between rounded-xl p-5 md:p-6 transition-all duration-300 hover:border-[rgba(236,228,180,0.35)] min-h-[520px] lg:h-[calc(100vh-140px)] max-h-[720px]">
+        <div className="glass-panel group relative flex flex-col justify-between rounded-xl p-5 md:p-6 transition-all duration-300 hover:border-[rgba(236,228,180,0.35)] min-h-[500px] lg:h-[calc(100vh-280px)] lg:min-h-[540px] max-h-[680px]">
           {/* Header */}
           <div className="border-b border-[rgba(236,228,180,0.12)] pb-4">
             <div className="flex items-baseline space-x-2">
@@ -320,6 +290,9 @@ export function DashboardView({
         </div>
 
       </div>
+
+      {/* ================= HOW VERITRACE WORKS EXAMPLE SECTION ================= */}
+      <HowItWorksExample />
     </div>
   );
 }
