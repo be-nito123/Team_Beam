@@ -1,0 +1,74 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg-color: #080808;
+    --sidebar-color: #0A0A0A;
+    --text-primary: #ECE4B4;
+    --text-secondary: #B9B49B;
+    --border-ivory: rgba(236, 228, 180, 0.22);
+    --border-ivory-light: rgba(236, 228, 180, 0.12);
+  }
+
+  body {
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+}
+
+/* Michroma font utility */
+.font-michroma {
+  font-family: 'Michroma', sans-serif;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #080808;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(236, 228, 180, 0.15);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(236, 228, 180, 0.3);
+}
+
+/* Glass panel */
+.glass-panel {
+  background-color: rgba(255, 255, 255, 0.035);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(236, 228, 180, 0.22);
+}
+
+.glass-panel-hover {
+  transition: all 0.2s ease;
+}
+
+.glass-panel-hover:hover {
+  border-color: rgba(236, 228, 180, 0.45);
+  box-shadow: 0 0 25px rgba(236, 228, 180, 0.04);
+}
+
+/* Textarea input glass */
+.input-glass {
+  background-color: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(236, 228, 180, 0.15);
+  color: #ECE4B4;
+}
+
+.input-glass:focus {
+  outline: none;
+  border-color: rgba(236, 228, 180, 0.55);
+  box-shadow: 0 0 15px rgba(236, 228, 180, 0.08);
+}
