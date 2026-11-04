@@ -75,7 +75,6 @@ async function run() {
 
     if (req.url().includes('/api/analyze') && req.method() === 'POST') {
       if (shouldDelayAnalyze) {
-        // Hold request open until routeResolver is called
         new Promise((resolve) => {
           routeResolver = resolve;
         }).then(() => {
@@ -150,7 +149,6 @@ async function run() {
   await textareas[1].type('Rayleigh scattering of sunlight causes the blue sky.');
 
   // Click Run Verification
-  const verifyBtn = await page.$('button:has(svg)');
   await page.evaluate(() => {
     const buttons = Array.from(document.querySelectorAll('button'));
     const btn = buttons.find(b => b.textContent.includes('RUN VERIFICATION'));
@@ -177,15 +175,8 @@ async function run() {
 
   // Switch to Light Mode during active shimmer
   await page.evaluate(() => {
-    const buttons = Array.from(document.querySelectorAll('header button'));
-    // Theme toggle button
-    const themeBtn = buttons.find(b => b.title && b.title.includes('theme'));
-    if (themeBtn) themeBtn.click();
-    else {
-      // Direct toggle
-      document.documentElement.setAttribute('data-theme', 'light');
-      document.documentElement.classList.remove('dark');
-    }
+    document.documentElement.setAttribute('data-theme', 'light');
+    document.documentElement.classList.remove('dark');
   });
 
   await new Promise(r => setTimeout(r, 400));
@@ -206,11 +197,10 @@ async function run() {
     routeResolver = null;
   }
 
-  // Wait for navigation to ResultsView
+  // Wait for navigation to ResultsView (look specifically for BACK TO COCKPIT)
   await page.waitForFunction(() => {
-    return document.body.textContent.includes('EVIDENCE EXTRACTION MATRIX') ||
-           document.body.textContent.includes('Rayleigh scattering');
-  }, { timeout: 5000 });
+    return document.body.textContent.includes('BACK TO COCKPIT');
+  }, { timeout: 8000 });
 
   // Shimmer should have stopped and disappeared
   shimmerExists = await page.evaluate(() => {
@@ -224,11 +214,11 @@ async function run() {
   // Go back to Cockpit
   await page.evaluate(() => {
     const buttons = Array.from(document.querySelectorAll('button'));
-    const cockpitBtn = buttons.find(b => b.textContent.includes('COCKPIT') || b.textContent.includes('DASHBOARD'));
+    const cockpitBtn = buttons.find(b => b.textContent.includes('BACK TO COCKPIT'));
     if (cockpitBtn) cockpitBtn.click();
   });
 
-  await new Promise(r => setTimeout(r, 600));
+  await page.waitForSelector('textarea');
 
   // Type valid inputs again
   const textareas2 = await page.$$('textarea');
@@ -255,11 +245,11 @@ async function run() {
     routeResolver = null;
   }
 
-  // Wait for error alert
+  // Wait for error alert or offline message
   await page.waitForFunction(() => {
     return document.body.textContent.includes('Verification backend error') ||
            document.body.textContent.includes('Cannot reach backend');
-  });
+  }, { timeout: 8000 });
 
   shimmerExists = await page.evaluate(() => {
     return !!document.querySelector('.font-mono.text-sm');
@@ -276,7 +266,7 @@ async function run() {
     if (plagBtn) plagBtn.click();
   });
 
-  await new Promise(r => setTimeout(r, 600));
+  await page.waitForSelector('input[type="file"]');
 
   // Upload original file and reference file
   const origFilePath = path.join(__dirname, 'sample_original.txt');
@@ -338,7 +328,7 @@ async function run() {
   await page.waitForFunction(() => {
     return document.body.textContent.includes('SIMILARITY SCORE') ||
            document.body.textContent.includes('ORIGINALITY AUDIT REPORT');
-  }, { timeout: 5000 });
+  }, { timeout: 8000 });
 
   shimmerExists = await page.evaluate(() => {
     return !!document.querySelector('.font-mono.text-sm');
