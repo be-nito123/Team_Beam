@@ -14,7 +14,6 @@ import {
   CheckCircle2,
 } from 'lucide-react';
 import { BorderTrail } from '@/components/core/BorderTrail';
-import { TextShimmer } from '@/components/core/text-shimmer';
 import { BackendContractModal } from './BackendContractModal';
 import { cn } from '@/lib/utils';
 
@@ -480,16 +479,6 @@ export function PlagiarismDashboardView({
             </>
           )}
         </button>
-
-        {/* Loading Shimmer State */}
-        {isLoading && (
-          <div className="mt-3 flex items-center justify-center space-x-2.5 py-1.5 px-4 rounded-full border border-[var(--border-muted)] bg-[var(--card-surface)] shadow-sm">
-            <div className="h-1.5 w-1.5 rounded-full bg-[var(--accent)] animate-ping" />
-            <TextShimmer className="font-mono text-sm" duration={1}>
-              Checking document similarity...
-            </TextShimmer>
-          </div>
-        )}
       </div>
 
       {/* Backend Contract Modal */}

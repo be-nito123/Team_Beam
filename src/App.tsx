@@ -40,7 +40,6 @@ export function App() {
     activeResult: aiActiveResult,
     recentSessions: aiRecentSessions,
     isLoading: aiLoading,
-    stage: aiStage,
     error: aiError,
     clearError: aiClearError,
     isMockMode: aiMockMode,
@@ -118,7 +117,6 @@ export function App() {
             <DashboardView
               onRunVerification={aiRunVerification}
               isLoading={aiLoading}
-              stage={aiStage}
               error={aiError}
               onClearError={aiClearError}
             />

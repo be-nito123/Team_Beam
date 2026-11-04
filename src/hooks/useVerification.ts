@@ -33,7 +33,6 @@ export function useVerification() {
   const [activeResult, setActiveResult] = useState<VerificationResult | null>(null);
   const [recentSessions, setRecentSessions] = useState<HistorySession[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [stage, setStage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isMockModeActive, setIsMockModeActive] = useState(false);
   const [activeFilter, setActiveFilter] = useState<VerificationStatus | 'ALL'>('ALL');
@@ -75,12 +74,9 @@ export function useVerification() {
 
       setError(null);
       setIsLoading(true);
-      setStage(null);
 
       try {
-const result = await runVerification(req, (reportedStage) => {
-          if (reportedStage) setStage(reportedStage);
-        });
+        const result = await runVerification(req);
         setActiveResult(result);
         setActiveFilter('ALL');
 
@@ -95,7 +91,6 @@ const result = await runVerification(req, (reportedStage) => {
         setError(err.message || 'Verification pipeline encountered an unexpected error.');
       } finally {
         setIsLoading(false);
-        setStage(null);
       }
     },
     [isLoading]
@@ -136,7 +131,6 @@ const result = await runVerification(req, (reportedStage) => {
     activeResult,
     recentSessions,
     isLoading,
-    stage,
     error,
     clearError: () => setError(null),
     isMockMode: isMockModeActive,

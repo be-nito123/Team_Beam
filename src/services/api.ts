@@ -46,10 +46,7 @@ export function setMockMode(enabled: boolean): void {
 export async function fetchHistory(): Promise<HistorySession[]> {
   try {
     if (!isMockMode) {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 2500);
-      const res = await fetch(`${BASE_URL}/api/history`, { signal: controller.signal });
-      clearTimeout(timeoutId);
+      const res = await fetch(`${BASE_URL}/api/history`);
       if (res.ok) {
         return await res.json();
       }
@@ -64,10 +61,7 @@ export async function fetchHistory(): Promise<HistorySession[]> {
 export async function fetchResultById(id: string): Promise<VerificationResult | null> {
   try {
     if (!isMockMode) {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 2500);
-      const res = await fetch(`${BASE_URL}/api/results/${encodeURIComponent(id)}`, { signal: controller.signal });
-      clearTimeout(timeoutId);
+      const res = await fetch(`${BASE_URL}/api/results/${id}`);
       if (res.ok) {
         return await res.json();
       }
@@ -80,8 +74,7 @@ export async function fetchResultById(id: string): Promise<VerificationResult | 
 }
 
 export async function runVerification(
-  req: VerificationRequest,
-  onStageChange?: (stage: string) => void
+  req: VerificationRequest
 ): Promise<VerificationResult> {
   if (!req.aiClaim.trim()) {
     throw new Error('AI Claim input cannot be empty.');
@@ -91,7 +84,8 @@ export async function runVerification(
   }
 
   // Attempt real API call first
-  try {
+  if (!isMockMode) {
+    try {
       const formData = new FormData();
       formData.append('aiClaim', req.aiClaim);
       formData.append('referenceText', req.referenceText);
@@ -108,18 +102,11 @@ export async function runVerification(
         const result: VerificationResult = await res.json();
         return result;
       }
-
-      const errorText = await res.text().catch(() => '');
-      throw new Error(
-        `Verification backend error (${res.status}): ${errorText || res.statusText}`
-      );
-    } catch (err: any) {
-      if (err.message && err.message.includes('Verification backend error')) {
-        throw err;
-      }
+    } catch (err) {
       console.warn('Real API call failed; falling back to Mock Engine:', err);
       isMockMode = true;
     }
+  }
 
   // Fallback / Mock Engine
   // Simulate network roundtrip between 800ms to 1400ms so the BorderTrail animation runs naturally
@@ -193,6 +180,7 @@ export async function runVerification(
         explanation: 'Discrepancy identified in values or assertions between claim and reference.',
       };
     } else {
+      // RULE: Never fabricate evidence. If no source sentence exists, show the claim as Unsupported with NO evidence object!
       status = 'UNSUPPORTED';
       explanation = 'No corresponding source sentence found in reference text. Marked Unsupported.';
       evidence = undefined;
@@ -234,6 +222,7 @@ export async function runVerification(
 
   mockDatabase[newId] = newResult;
 
+  // Add to sessions
   const newSession: HistorySession = {
     id: newId,
     title,

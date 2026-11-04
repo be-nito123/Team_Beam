@@ -313,7 +313,8 @@ export async function submitPlagiarismCheck(
   // Try real API call first
   try {
     const formData = new FormData();
-    if (req.originalFile) formData.append('originalDocument', req.originalFile); else if (req.originalText) formData.append('originalText', req.originalText);
+    if (req.originalFile) formData.append('originalDocument', req.originalFile);
+    else if (req.originalText) formData.append('originalText', req.originalText);
     req.referenceFiles.forEach((file) => {
       formData.append('referenceDocuments', file);
     });
@@ -339,7 +340,9 @@ export async function submitPlagiarismCheck(
 
   // If no backend responded or responded with 404/HTML:
   // Check if text files are provided so we can run deterministic validated local calculation:
-  const canRunLocal = !!req.originalFile && /\.txt$/i.test(req.originalFile.name) &&
+  const canRunLocal =
+    !!req.originalFile &&
+    /\.txt$/i.test(req.originalFile.name) &&
     req.referenceFiles.every((file) => /\.txt$/i.test(file.name));
 
   if (canRunLocal && req.originalFile) {
