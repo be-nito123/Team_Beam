@@ -9,12 +9,14 @@ import {
 } from 'lucide-react';
 import { BorderTrail } from '@/components/core/BorderTrail';
 import { HowItWorksExample } from './HowItWorksExample';
+import { TextShimmer } from '@/components/core/text-shimmer';
 import { cn } from '@/lib/utils';
 import { VerificationRequest } from '@/types/verification';
 
 interface DashboardViewProps {
   onRunVerification: (request: VerificationRequest) => Promise<void>;
   isLoading: boolean;
+  stage?: string | null;
   error?: string | null;
   onClearError?: () => void;
 }
@@ -22,6 +24,7 @@ interface DashboardViewProps {
 export function DashboardView({
   onRunVerification,
   isLoading,
+  stage,
   error,
   onClearError,
 }: DashboardViewProps) {
@@ -286,6 +289,16 @@ export function DashboardView({
                 )}
               </button>
             </div>
+
+            {/* Active Loading Shimmer State */}
+            {isLoading && (
+              <div className="mt-4 flex items-center justify-center space-x-2.5 py-1.5 px-4 rounded-full border border-[var(--border-muted)] bg-[var(--card-surface)] shadow-sm">
+                <div className="h-1.5 w-1.5 rounded-full bg-[var(--accent)] animate-ping" />
+                <TextShimmer className="font-mono text-sm" duration={1}>
+                  {stage || 'Analyzing claims...'}
+                </TextShimmer>
+              </div>
+            )}
           </div>
 
           {/* Footer state indicator */}

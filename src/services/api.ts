@@ -45,11 +45,15 @@ export function setMockMode(enabled: boolean): void {
 
 export async function fetchHistory(): Promise<HistorySession[]> {
   try {
-    if (!isMockMode) {
-      const res = await fetch(`${BASE_URL}/api/history`);
+if (!isMockMode) {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 2500);
+      const res = await fetch(`${BASE_URL}/api/history`, { signal: controller.signal });
+      clearTimeout(timeoutId);
       if (res.ok) {
         return await res.json();
       }
+    }
     }
   } catch (err) {
     console.warn('Backend history fetch failed, using mock data:', err);
@@ -60,11 +64,15 @@ export async function fetchHistory(): Promise<HistorySession[]> {
 
 export async function fetchResultById(id: string): Promise<VerificationResult | null> {
   try {
-    if (!isMockMode) {
-      const res = await fetch(`${BASE_URL}/api/results/${id}`);
+if (!isMockMode) {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 2500);
+      const res = await fetch(`${BASE_URL}/api/history`, { signal: controller.signal });
+      clearTimeout(timeoutId);
       if (res.ok) {
         return await res.json();
       }
+    }
     }
   } catch (err) {
     console.warn(`Backend fetchResultById(${id}) failed, checking local database:`, err);
@@ -74,7 +82,8 @@ export async function fetchResultById(id: string): Promise<VerificationResult | 
 }
 
 export async function runVerification(
-  req: VerificationRequest
+  req: VerificationRequest,
+  onStageChange?: (stage: string) => void
 ): Promise<VerificationResult> {
   if (!req.aiClaim.trim()) {
     throw new Error('AI Claim input cannot be empty.');
@@ -157,6 +166,7 @@ export async function runVerification(
       }
     }
 
+
     let status: VerificationStatus = 'UNSUPPORTED';
     let explanation = 'No corroborating or refuting evidence was identified in the provided reference text.';
     let evidence = undefined;
@@ -234,4 +244,5 @@ export async function runVerification(
   mockSessions = [newSession, ...mockSessions];
 
   return newResult;
+
 }
